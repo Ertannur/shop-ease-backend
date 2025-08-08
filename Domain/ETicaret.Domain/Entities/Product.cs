@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Domain.Entities
 {
@@ -13,8 +14,8 @@ namespace ETicaret.Domain.Entities
         public Category Category { get; set; }      // Enum olarak tanımlayamdım 
         public string Name { get; set; }
         public string Description { get; set; }
+        [Precision(18, 2)]
         public decimal Price { get; set; }
-        public ProductType ProductType { get; set; }
-        public Guid ProductTypeId { get; set; }
+        public IEnumerable<ProductType> ProductTypes { get; set; }
     }
 }

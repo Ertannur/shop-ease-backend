@@ -10,7 +10,6 @@ namespace ETicaret.Domain.Entities
 {
     public class Size:BaseEntity
     {
-       
-        public SizeType SizeType { get; set; }
+       public SizeType SizeType { get; set; }
     }
 }

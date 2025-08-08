@@ -17,6 +17,8 @@ public class AuthService(UserManager<AppUser> userManager, IRoleService roleServ
             PhoneNumber = registerDto.PhoneNumber,
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
+            DateOfBirth = registerDto.DateOfBirth,
+            Gender = registerDto.Gender,
         };
         var result = await userManager.CreateAsync(user, registerDto.Password);
         if (result.Succeeded)

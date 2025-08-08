@@ -12,7 +12,5 @@ namespace ETicaret.Domain.Entities
     {
         public ColorType ColorType { get; set; }
         public ProductType ProductType { get; set; }
-        public Guid ProductTypeId { get; set; }
-        //istenirse hex şeklinde orneğin FFFF gibi siyah değerler verilebilir
     }
 }

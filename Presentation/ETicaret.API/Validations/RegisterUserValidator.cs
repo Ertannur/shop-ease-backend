@@ -15,5 +15,7 @@ public class RegisterUserValidator : AbstractValidator<RegisterUserCommandReques
 
         RuleFor(x => x.Email).EmailAddress().WithMessage("E Mail Adresinizi Formata Uygun Yazınız");
         RuleFor(x=>x.PhoneNumber).Matches(@"^0?\d{10}$").WithMessage("Telefon Numarasını Doğru Yazınız");
+        RuleFor(x => x.DateOfBirth).Must(date => date <= DateOnly.FromDateTime(DateTime.Today))
+            .WithMessage("Doğum Tarihiniz Gelecek Bir Tarih Olamaz");
     }
 }

@@ -15,5 +15,6 @@ namespace ETicaret.Domain.Entities
         public Guid ColorId { get; set; }
         public Size Size { get; set; }
         public Guid SizeId { get; set; }
+        public Stock Stock { get; set; }
     }
 }
