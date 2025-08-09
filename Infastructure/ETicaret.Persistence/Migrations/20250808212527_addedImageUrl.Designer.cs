@@ -4,6 +4,7 @@ using ETicaret.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETicaret.Persistence.Migrations
 {
     [DbContext(typeof(ETicaretDbContext))]
-    partial class ETicaretDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250808212527_addedImageUrl")]
+    partial class addedImageUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,35 +133,6 @@ namespace ETicaret.Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ETicaret.Domain.Entities.Category", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ParentCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentCategoryId");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("ETicaret.Domain.Entities.Color", b =>
                 {
                     b.Property<Guid>("Id")
@@ -188,8 +162,8 @@ namespace ETicaret.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -217,8 +191,6 @@ namespace ETicaret.Persistence.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
                 });
@@ -414,26 +386,6 @@ namespace ETicaret.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ETicaret.Domain.Entities.Category", b =>
-                {
-                    b.HasOne("ETicaret.Domain.Entities.Category", "ParentCategory")
-                        .WithMany()
-                        .HasForeignKey("ParentCategoryId");
-
-                    b.Navigation("ParentCategory");
-                });
-
-            modelBuilder.Entity("ETicaret.Domain.Entities.Product", b =>
-                {
-                    b.HasOne("ETicaret.Domain.Entities.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("ETicaret.Domain.Entities.ProductType", b =>
                 {
                     b.HasOne("ETicaret.Domain.Entities.Color", "Color")
@@ -521,11 +473,6 @@ namespace ETicaret.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ETicaret.Domain.Entities.Category", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ETicaret.Domain.Entities.Color", b =>

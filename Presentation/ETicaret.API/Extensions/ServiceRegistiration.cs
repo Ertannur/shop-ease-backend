@@ -5,6 +5,7 @@ using ETicaret.API.Validations;
 using ETicaret.Application.Abstractions;
 using ETicaret.Application.CQRS.Commands.Auths;
 using ETicaret.Application.CQRS.Handlers.Auths;
+using ETicaret.Application.CQRS.Queries.Products;
 using ETicaret.Domain.Entities;
 using ETicaret.Persistence.Contexts;
 using ETicaret.Persistence.Services;
@@ -82,6 +83,7 @@ public static class ServiceRegistiration
        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
        services.AddScoped<IValidator<RegisterUserCommandRequest>, RegisterUserValidator>();
        services.AddScoped<IValidator<LoginUserCommandRequest>, LoginUserValidator>();
+       services.AddScoped<IValidator<GetProductsQuery>, GetProductsValidator>();
        services.AddFluentValidationAutoValidation();
        services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
        
@@ -91,6 +93,7 @@ public static class ServiceRegistiration
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IGenericService, GenericService>(); // özelleştirme yapılacak
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IProductService, ProductService>();
 
         services.AddAuthentication(opt =>
             {

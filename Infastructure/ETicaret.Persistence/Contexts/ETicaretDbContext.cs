@@ -10,6 +10,7 @@ namespace ETicaret.Persistence.Contexts
         public ETicaretDbContext(DbContextOptions<ETicaretDbContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<ProductType> productTypes { get; set; }
@@ -17,7 +18,7 @@ namespace ETicaret.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // Identity yapýlarýný korur
+            base.OnModelCreating(modelBuilder); 
 
           
         }
