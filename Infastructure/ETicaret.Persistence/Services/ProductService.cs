@@ -14,13 +14,14 @@ public class ProductService(ETicaretDbContext context) : IProductService
         var products = context.Products.Include(x => x.Category)
             .Include(x => x.ProductTypes)
             .Include(x => x.Images)
+            .AsSplitQuery()
             .Where(x=> x.IsDeleted == false);
         if (!string.IsNullOrWhiteSpace(category))
         {
             products = products.Where(p=> p.Category.Name == category );
         }
 
-        var paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize));
+        var paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x=>x.CreatedDate);
         var productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
         {
             Name = x.Name,
@@ -42,6 +43,7 @@ public class ProductService(ETicaretDbContext context) : IProductService
     {
         var colorTypeEnum = typeof(ColorType);
         var productDto = await context.Products
+            .AsSplitQuery() 
             .Where(p => p.Id == id)
             .Select(p => new GetProductByIdResultDto
             {
@@ -55,13 +57,19 @@ public class ProductService(ETicaretDbContext context) : IProductService
                 Images = p.Images
                     .Select(i => i.ImageUrl)
                     .ToList(),
-                Sizes = p.ProductTypes
-                    .Where(pt => pt.Size != null)
-                    .Select(pt => pt.Size.Name)
-                    .ToList(),
-                Colors = p.ProductTypes
-                    .Where(pt => pt.Color != null)
-                    .Select(pt => Enum.GetName(colorTypeEnum,pt.Color.ColorType))
+                Details = p.ProductTypes
+                    .Select(pt => new ProductDetail
+                    {
+                        Color = pt.Color != null 
+                            ? pt.Color.ColorType.ToString() 
+                            : null,
+                        Size = pt.Size != null 
+                            ? pt.Size.Name 
+                            : null,
+                        Stock = pt.Stock != null 
+                            ? pt.Stock.Quantity 
+                            : 0
+                    })
                     .ToList()
             })
             .FirstOrDefaultAsync();

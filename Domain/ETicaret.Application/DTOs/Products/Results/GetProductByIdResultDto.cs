@@ -10,6 +10,13 @@ public class GetProductByIdResultDto
     public decimal Price { get; set; }
     public int Stock { get; set; }
     public IEnumerable<string> Images { get; set; }
-    public IEnumerable<string> Sizes { get; set; }
-    public IEnumerable<string> Colors { get; set; }
+    public IEnumerable<ProductDetail>  Details { get; set; }
+    
+}
+
+public class ProductDetail
+{
+    public string Color { get;set; }
+    public string Size { get;set; }
+    public int Stock { get;set; }
 }

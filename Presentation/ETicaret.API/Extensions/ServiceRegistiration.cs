@@ -3,10 +3,12 @@ using System.Text;
 using ETicaret.API.Localizations;
 using ETicaret.API.Validations;
 using ETicaret.Application.Abstractions;
+using ETicaret.Application.Abstractions.Storage;
 using ETicaret.Application.CQRS.Commands.Auths;
 using ETicaret.Application.CQRS.Handlers.Auths;
 using ETicaret.Application.CQRS.Queries.Products;
 using ETicaret.Domain.Entities;
+using ETicaret.Infastructure.Services.Storage;
 using ETicaret.Persistence.Contexts;
 using ETicaret.Persistence.Services;
 using FluentValidation;
@@ -17,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
+using TokenHandler = ETicaret.Infastructure.Services.Token.TokenHandler;
 
 namespace ETicaret.API.Extensions;
 
@@ -92,7 +95,7 @@ public static class ServiceRegistiration
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IGenericService, GenericService>(); // özelleştirme yapılacak
-        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ITokenService, TokenHandler>();
         services.AddScoped<IProductService, ProductService>();
 
         services.AddAuthentication(opt =>
@@ -119,6 +122,13 @@ public static class ServiceRegistiration
                     NameClaimType = ClaimTypes.Name
                 };
             });
+
+        services.AddScoped<IStorageService, StorageService>();
         return services;
+    }
+
+    public static void AddStorage<T>(this IServiceCollection services) where T : Storage, IStorage
+    {
+        services.AddScoped<IStorage, T>();
     }
 }

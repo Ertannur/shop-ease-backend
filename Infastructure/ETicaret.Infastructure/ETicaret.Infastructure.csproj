@@ -7,22 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\Products\Requests\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\ETicaret.Domain\ETicaret.Domain.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="MediatR" Version="13.0.0" />
-      <PackageReference Include="Riok.Mapperly" Version="4.2.1" />
+      <ProjectReference Include="..\..\Domain\ETicaret.Application\ETicaret.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Reference Include="Microsoft.AspNetCore.Http.Features">
         <HintPath>..\..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\9.0.8\Microsoft.AspNetCore.Http.Features.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
     </ItemGroup>
 
 </Project>

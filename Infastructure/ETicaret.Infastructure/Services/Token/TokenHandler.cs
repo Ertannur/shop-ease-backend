@@ -2,20 +2,19 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ETicaret.Application.Abstractions;
-using ETicaret.Application.DTOs;
 using ETicaret.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace ETicaret.Persistence.Services;
+namespace ETicaret.Infastructure.Services.Token;
 
-public class TokenService(IConfiguration configuration, UserManager<AppUser> userManager, IRoleService roleService) : ITokenService
+public class TokenHandler(IConfiguration configuration, UserManager<AppUser> userManager, IRoleService roleService) : ITokenService
 {
-    public async Task<Token> CreateAccessTokenAsync(string userId)
+    public async Task<Application.DTOs.Token> CreateAccessTokenAsync(string userId)
     {
-        Token token = new();
+        Application.DTOs.Token token = new();
         SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
         SigningCredentials signingCredentials = new(securityKey, SecurityAlgorithms.HmacSha256);
         token.Expiration = DateTime.UtcNow.AddDays(5);

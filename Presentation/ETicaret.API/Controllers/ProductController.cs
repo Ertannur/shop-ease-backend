@@ -11,7 +11,6 @@ public class ProductController(IMediator mediator) : ControllerBase
 {
     [HttpGet("[action]")]
     [AllowAnonymous]
-    // Silinmemiş olan productlar getirilecektir ve kategorilere göre
     public async Task<IActionResult> GetProducts([FromQuery] int currentPage, [FromQuery] int pageSize, [FromQuery] string? category)
     {
         var getProductsQuery = new GetProductsQuery() { CurrentPage = currentPage, PageSize = pageSize, Category = category };
