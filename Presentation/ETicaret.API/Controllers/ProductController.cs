@@ -19,6 +19,14 @@ public class ProductController(IMediator mediator) : ControllerBase
         return Ok(result);      
     }
 
+    [HttpGet("[action]")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetProductById([FromQuery] Guid id)
+    {
+        var result = await mediator.Send(new  GetProductByIdQuery() { Id = id });
+        return Ok(result);
+    }
+
     [HttpPost("[action]")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddProduct()

@@ -1,5 +1,6 @@
 using ETicaret.Application.Abstractions;
 using ETicaret.Application.DTOs.Products.Results;
+using ETicaret.Domain.Enums;
 using ETicaret.Persistence.Contexts;
 using ETicaret.Persistence.Paggination;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +9,11 @@ namespace ETicaret.Persistence.Services;
 
 public class ProductService(ETicaretDbContext context) : IProductService
 {
-    public async Task<GetProductResultDto> GetProducts(string? category, int currentPage = 1, int pageSize = 8)
+    public async Task<GetProductResultDto> GetProductsAsync(string? category, int currentPage = 1, int pageSize = 8)
     {
-        var products = context.Products.Include(x => x.Category).Include(x => x.ProductTypes)
+        var products = context.Products.Include(x => x.Category)
+            .Include(x => x.ProductTypes)
+            .Include(x => x.Images)
             .Where(x=> x.IsDeleted == false);
         if (!string.IsNullOrWhiteSpace(category))
         {
@@ -22,8 +25,8 @@ public class ProductService(ETicaretDbContext context) : IProductService
         {
             Name = x.Name,
             ProductId = x.Id,
-            ImageUrl = x.ImageUrl,
             Price = x.Price,
+            ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
         });
         return new()
         {
@@ -33,5 +36,40 @@ public class ProductService(ETicaretDbContext context) : IProductService
             TotalPage = paginationResponse.TotalPages,
             TotalCount = paginationResponse.TotalCount
         };
+    }
+
+    public async Task<GetProductByIdResultDto> GetProductByIdAsync(Guid id)
+    {
+        var colorTypeEnum = typeof(ColorType);
+        var productDto = await context.Products
+            .Where(p => p.Id == id)
+            .Select(p => new GetProductByIdResultDto
+            {
+                ProductId = p.Id.ToString(),
+                Title = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Stock = p.ProductTypes
+                    .Where(pt => pt.Stock != null)
+                    .Sum(pt => (int?)pt.Stock.Quantity) ?? 0, 
+                Images = p.Images
+                    .Select(i => i.ImageUrl)
+                    .ToList(),
+                Sizes = p.ProductTypes
+                    .Where(pt => pt.Size != null)
+                    .Select(pt => pt.Size.Name)
+                    .ToList(),
+                Colors = p.ProductTypes
+                    .Where(pt => pt.Color != null)
+                    .Select(pt => Enum.GetName(colorTypeEnum,pt.Color.ColorType))
+                    .ToList()
+            })
+            .FirstOrDefaultAsync();
+        if (productDto == null)
+        {
+            throw new Exception("Ürün bulunamadı.");
+        }
+
+        return productDto;
     }
 }

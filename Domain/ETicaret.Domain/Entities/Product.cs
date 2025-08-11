@@ -13,6 +13,6 @@ namespace ETicaret.Domain.Entities
         [Precision(18, 2)]
         public decimal Price { get; set; }
         public IEnumerable<ProductType> ProductTypes { get; set; }
-        public string ImageUrl { get; set; }
+        public IEnumerable<Image> Images { get; set; }
     }
 }

@@ -11,7 +11,7 @@ public class GetProductsQueryHandler(IProductService productService) : IRequestH
     {
         if (request.CurrentPage == 0 || request.PageSize == 0)
         {
-            var result = await productService.GetProducts(request.Category);
+            var result = await productService.GetProductsAsync(request.Category);
             return new GetProductsQueryResult()
             {
                 Products = result.Products,
@@ -23,7 +23,7 @@ public class GetProductsQueryHandler(IProductService productService) : IRequestH
         }
         else
         {
-            var result = await productService.GetProducts(request.Category, request.CurrentPage, request.PageSize);
+            var result = await productService.GetProductsAsync(request.Category, request.CurrentPage, request.PageSize);
             return new GetProductsQueryResult()
             {
                 Products = result.Products,
