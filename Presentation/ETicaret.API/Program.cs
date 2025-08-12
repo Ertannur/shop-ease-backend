@@ -1,5 +1,8 @@
 using ETicaret.API.Extensions;
 using ETicaret.Infastructure.Services.Storage.Azure;
+using ETicaret.SignalR;
+using ETicaret.SignalR.Hubs;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,5 +23,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<CustomerHub>("/chatHub");
 app.Run();

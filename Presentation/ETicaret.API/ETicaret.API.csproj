@@ -38,6 +38,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Infastructure\ETicaret.Infastructure\ETicaret.Infastructure.csproj" />
       <ProjectReference Include="..\..\Infastructure\ETicaret.Persistence\ETicaret.Persistence.csproj" />
+      <ProjectReference Include="..\..\Infastructure\ETicaret.SignalR\ETicaret.SignalR.csproj" />
     </ItemGroup>
 
 </Project>

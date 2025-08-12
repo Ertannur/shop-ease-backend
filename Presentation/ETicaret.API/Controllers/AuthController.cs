@@ -1,4 +1,5 @@
 ﻿using ETicaret.API.Validations;
+using ETicaret.Application.Abstractions;
 using ETicaret.Application.CQRS.Commands.Auths;
 using FluentValidation;
 using FluentValidation.Results;
@@ -11,7 +12,7 @@ namespace ETicaret.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     
-    public class AuthController(IMediator mediator, IValidator<RegisterUserCommandRequest> validator) : ControllerBase
+    public class AuthController(IMediator mediator, IEmailService service) : ControllerBase
     {
         [HttpPost("[action]")]
         [AllowAnonymous]
@@ -38,6 +39,21 @@ namespace ETicaret.API.Controllers
         public IActionResult Roles()
         {
             return Ok("Başarılı");
+        }
+
+        [HttpPost("[action]")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword()
+        {
+            await service.SendEmailAsync("umutcanguncu@icloud.com", "Şifre Sıfırlama", "Adsfdmdfmd");
+            return Ok();
         }
     }
 

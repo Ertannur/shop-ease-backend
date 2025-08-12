@@ -3,14 +3,18 @@ using System.Text;
 using ETicaret.API.Localizations;
 using ETicaret.API.Validations;
 using ETicaret.Application.Abstractions;
+using ETicaret.Application.Abstractions.Hubs;
 using ETicaret.Application.Abstractions.Storage;
 using ETicaret.Application.CQRS.Commands.Auths;
+using ETicaret.Application.CQRS.Commands.Users;
 using ETicaret.Application.CQRS.Handlers.Auths;
 using ETicaret.Application.CQRS.Queries.Products;
 using ETicaret.Domain.Entities;
+using ETicaret.Infastructure.Services;
 using ETicaret.Infastructure.Services.Storage;
 using ETicaret.Persistence.Contexts;
 using ETicaret.Persistence.Services;
+using ETicaret.SignalR.HubServices;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -87,6 +91,7 @@ public static class ServiceRegistiration
        services.AddScoped<IValidator<RegisterUserCommandRequest>, RegisterUserValidator>();
        services.AddScoped<IValidator<LoginUserCommandRequest>, LoginUserValidator>();
        services.AddScoped<IValidator<GetProductsQuery>, GetProductsValidator>();
+       services.AddScoped<IValidator<UpdateUserCommandRequest>, UpdateUserValidator>();
        services.AddFluentValidationAutoValidation();
        services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
        
@@ -97,7 +102,8 @@ public static class ServiceRegistiration
         services.AddScoped<IGenericService, GenericService>(); // özelleştirme yapılacak
         services.AddScoped<ITokenService, TokenHandler>();
         services.AddScoped<IProductService, ProductService>();
-
+        services.AddScoped<IEmailService, EmailService>();
+        // Jwt Token Ayarlamaları
         services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -122,8 +128,12 @@ public static class ServiceRegistiration
                     NameClaimType = ClaimTypes.Name
                 };
             });
-
+        
         services.AddScoped<IStorageService, StorageService>();
+        
+        // SignalR Konfigürasyonu
+        services.AddTransient<ICustomerHubService, CustomerHubService>();
+        services.AddSignalR();
         return services;
     }
 
