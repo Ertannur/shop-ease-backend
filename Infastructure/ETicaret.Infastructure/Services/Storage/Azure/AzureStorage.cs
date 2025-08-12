@@ -13,7 +13,7 @@ public class AzureStorage : Storage, IAzureStorage
 
     public AzureStorage(IConfiguration configuration)
     {
-        _blobServiceClient = new(configuration["Storage:Azure"]);
+        _blobServiceClient = new(configuration["Storages:Azure"]);
       
     }
 
@@ -25,10 +25,10 @@ public class AzureStorage : Storage, IAzureStorage
         List<(string filename, string pathOrContainerName)> datas = new();
         foreach (IFormFile file in files)
         {
-            var fileNewName =await FileRenameAsync(containerName, file.Name, HasFile);
+            var fileNewName =await FileRenameAsync(containerName, file.FileName, HasFile);
             var blobClient = _blobContainerClient.GetBlobClient(fileNewName);
             await blobClient.UploadAsync(file.OpenReadStream());
-            datas.Add((fileNewName, containerName));
+            datas.Add((fileNewName, $"https://eticaretfiles.blob.core.windows.net/{containerName}/{fileNewName}"));
         }
         return datas;
     }

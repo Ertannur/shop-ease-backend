@@ -1,4 +1,4 @@
-using ETicaret.Application.Abstractions;
+using ETicaret.Application.Abstractions.Storage;
 using ETicaret.Application.CQRS.Queries.Products;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ETicaret.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class ProductController(IMediator mediator) : ControllerBase
+public class ProductController(IMediator mediator, IStorageService storageService) : ControllerBase
 {
     [HttpGet("[action]")]
     [AllowAnonymous]
@@ -45,5 +45,13 @@ public class ProductController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> DeleteProduct()
     {
         return Ok();
-    }   
+    }
+
+    [HttpPost("[action]")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Upload(Guid id)
+    {
+        var result = await storageService.UploadAsync("photo-images", Request.Form.Files);
+        return Ok();
+    }
 }
