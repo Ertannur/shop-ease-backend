@@ -1,5 +1,7 @@
 using ETicaret.Application.Abstractions;
 using ETicaret.Application.DTOs.Products.Results;
+using ETicaret.Application.DTOs.Products.Requests;
+using ETicaret.Domain.Entities;
 using ETicaret.Domain.Enums;
 using ETicaret.Persistence.Contexts;
 using ETicaret.Persistence.Paggination;
@@ -15,13 +17,14 @@ public class ProductService(ETicaretDbContext context) : IProductService
             .Include(x => x.ProductTypes)
             .Include(x => x.Images)
             .AsSplitQuery()
-            .Where(x=> x.IsDeleted == false);
+            .Where(x => x.IsDeleted == false);
+
         if (!string.IsNullOrWhiteSpace(category))
         {
-            products = products.Where(p=> p.Category.Name == category );
+            products = products.Where(p => p.Category.Name == category);
         }
 
-        var paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x=>x.CreatedDate);
+        var paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.CreatedDate);
         var productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
         {
             Name = x.Name,
@@ -29,6 +32,7 @@ public class ProductService(ETicaretDbContext context) : IProductService
             Price = x.Price,
             ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
         });
+
         return new()
         {
             Products = productViewModels,
@@ -43,7 +47,7 @@ public class ProductService(ETicaretDbContext context) : IProductService
     {
         var colorTypeEnum = typeof(ColorType);
         var productDto = await context.Products
-            .AsSplitQuery() 
+            .AsSplitQuery()
             .Where(p => p.Id == id)
             .Select(p => new GetProductByIdResultDto
             {
@@ -53,26 +57,27 @@ public class ProductService(ETicaretDbContext context) : IProductService
                 Price = p.Price,
                 Stock = p.ProductTypes
                     .Where(pt => pt.Stock != null)
-                    .Sum(pt => (int?)pt.Stock.Quantity) ?? 0, 
+                    .Sum(pt => (int?)pt.Stock.Quantity) ?? 0,
                 Images = p.Images
                     .Select(i => i.ImageUrl)
                     .ToList(),
                 Details = p.ProductTypes
                     .Select(pt => new ProductDetail
                     {
-                        Color = pt.Color != null 
-                            ? pt.Color.ColorType.ToString() 
+                        Color = pt.Color != null
+                            ? pt.Color.ColorType.ToString()
                             : null,
-                        Size = pt.Size != null 
-                            ? pt.Size.Name 
+                        Size = pt.Size != null
+                            ? pt.Size.Name
                             : null,
-                        Stock = pt.Stock != null 
-                            ? pt.Stock.Quantity 
+                        Stock = pt.Stock != null
+                            ? pt.Stock.Quantity
                             : 0
                     })
                     .ToList()
             })
             .FirstOrDefaultAsync();
+
         if (productDto == null)
         {
             throw new Exception("Ürün bulunamadı.");
@@ -80,4 +85,25 @@ public class ProductService(ETicaretDbContext context) : IProductService
 
         return productDto;
     }
+
+    //eklendi
+    public async Task<AddProductResultDto> AddProductAsync(AddProductRequest dto)
+    {
+        var product = new Product
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            Price = dto.Price,
+            CategoryId = dto.CategoryId,
+            CreatedDate = DateTime.UtcNow,
+            IsDeleted = false
+        };
+
+        var result =
+        await context.Products.AddAsync(product);
+        await context.SaveChangesAsync();
+        return new AddProductResultDto() {Message="Ürün eklendi",Success=true};
+    }
+
+    
 }

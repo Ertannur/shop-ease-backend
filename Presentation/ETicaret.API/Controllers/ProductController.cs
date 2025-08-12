@@ -1,4 +1,5 @@
 using ETicaret.Application.Abstractions.Storage;
+using ETicaret.Application.CQRS.Commands.Products;
 using ETicaret.Application.CQRS.Queries.Products;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,9 +29,12 @@ public class ProductController(IMediator mediator, IStorageService storageServic
 
     [HttpPost("[action]")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> AddProduct()
+    public async Task<IActionResult> AddProduct(AddProductCommandRequest addProductCommandRequest)
     {
-        return Ok();
+        var result=await mediator.Send(addProductCommandRequest);
+        if (result.Success) 
+            return Ok(result);
+        return BadRequest(result);
     }
 
     [HttpPost("[action]")]

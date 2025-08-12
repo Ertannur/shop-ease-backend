@@ -7,15 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\Products\Requests\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ETicaret.Domain\ETicaret.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="13.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.3.0" />
       <PackageReference Include="Riok.Mapperly" Version="4.2.1" />
     </ItemGroup>
 
