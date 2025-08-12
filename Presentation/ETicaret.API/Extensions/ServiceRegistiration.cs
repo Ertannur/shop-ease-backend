@@ -92,6 +92,8 @@ public static class ServiceRegistiration
        services.AddScoped<IValidator<LoginUserCommandRequest>, LoginUserValidator>();
        services.AddScoped<IValidator<GetProductsQuery>, GetProductsValidator>();
        services.AddScoped<IValidator<UpdateUserCommandRequest>, UpdateUserValidator>();
+       services.AddScoped<IValidator<ResetPasswordCommandRequest>, ResetPasswordValidator>();
+       services.AddScoped<IValidator<ForgotPasswordCommandRequest>, ForgotPasswordValidator>();
        services.AddFluentValidationAutoValidation();
        services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
        

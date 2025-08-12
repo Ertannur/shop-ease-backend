@@ -11,8 +11,11 @@ public class RegisterUserValidator : AbstractValidator<RegisterUserCommandReques
         RuleFor(x=>x.LastName).NotEmpty().WithMessage("Soyad Bilgisi Boş Geçilemez");
         RuleFor(x=> x.Email).NotEmpty().WithMessage("Email Bilgisi Boş Geçilemez");
         RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Telefon Numarası Boş Geçilemez");
-        RuleFor(x=>x.Password).NotEmpty().WithMessage("Şifre Bilgisi Boş Geçilemez");
-
+        RuleFor(x => x.Password).NotEmpty().WithMessage("Şifre Bilgisi Boş Geçilemez.")
+            .MinimumLength(7).WithMessage("Şifreniz Minimum 7 Karakter Olmalıdır.")
+            .Matches(@"[A-Z]").WithMessage("Şifreniz En az Bir Büyük Harf İçermeli.")
+            .Matches(@"\d").WithMessage("Şifreniz En Az Bir Sayı İçermeli.")
+            .Matches(@"[!@#$%^&*(),.?""{}|<>]").WithMessage("Şifreniz En Az 1 Özel Karakter İçermelidir");
         RuleFor(x => x.Email).EmailAddress().WithMessage("E Mail Adresinizi Formata Uygun Yazınız");
         RuleFor(x=>x.PhoneNumber).Matches(@"^0?\d{10}$").WithMessage("Telefon Numarasını Doğru Yazınız");
         RuleFor(x => x.DateOfBirth).Must(date => date <= DateOnly.FromDateTime(DateTime.Today))

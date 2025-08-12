@@ -27,4 +27,5 @@ public static partial class ModelMapper
     public static partial UpdateUserDto MapUpdateUserDto(UpdateUserCommandRequest request);
     public static partial UserChangePasswordDto MapUserChangePasswordDto(UserChangePasswordCommandRequest request);
     public static partial AddProductRequest MapAddProductRequest(AddProductCommandRequest request);
+    public static partial ResetPasswordDto MapResetPasswordDto(ResetPasswordCommandRequest  resetPasswordCommandRequest);
 }

@@ -12,7 +12,7 @@ namespace ETicaret.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     
-    public class AuthController(IMediator mediator, IEmailService service) : ControllerBase
+    public class AuthController(IMediator mediator, IEmailService service, IAuthService authService) : ControllerBase
     {
         [HttpPost("[action]")]
         [AllowAnonymous]
@@ -43,17 +43,22 @@ namespace ETicaret.API.Controllers
 
         [HttpPost("[action]")]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword()
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordCommandRequest request)
         {
-            return Ok();
+           var result = await mediator.Send(request);
+           if(result.Success) 
+               return Ok(result);
+           return BadRequest(result);
         }
 
         [HttpPost("[action]")]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword()
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommandRequest request)
         {
-            await service.SendEmailAsync("umutcanguncu@icloud.com", "Şifre Sıfırlama", "Adsfdmdfmd");
-            return Ok();
+            var result = await mediator.Send(request);
+            if(result.Success)
+                return Ok(result);
+            return BadRequest(result);
         }
     }
 

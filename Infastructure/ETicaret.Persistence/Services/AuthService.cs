@@ -1,12 +1,17 @@
+using System.Text;
 using ETicaret.Application.Abstractions;
 using ETicaret.Application.DTOs.Auths.Requests;
 using ETicaret.Application.DTOs.Auths.Results;
 using ETicaret.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 
 namespace ETicaret.Persistence.Services;
 
-public class AuthService(UserManager<AppUser> userManager, IRoleService roleService, SignInManager<AppUser> signInManager,ITokenService tokenService) : IAuthService
+public class AuthService(UserManager<AppUser> userManager, IRoleService roleService, 
+    SignInManager<AppUser> signInManager,ITokenService tokenService
+    ,IEmailService emailService, IConfiguration configuration) : IAuthService
 {
     public async Task<RegisterResultDto> RegisterAsync(RegisterDto registerDto)
     {
@@ -65,6 +70,53 @@ public class AuthService(UserManager<AppUser> userManager, IRoleService roleServ
         {
             Success = false,
             Message = "E Posta Adresiniz veya Şifreniz Hatalı"
+        };
+    }
+
+    public async Task<ForgotPasswordResultDto> ForgotPasswordAsync(string email)
+    {
+        var  user = await userManager.FindByEmailAsync(email);
+        if (user is null)
+            return new()
+            {
+                Success = false,
+                Message = "İlgili E Posta Adresi Sistemimizde Kayıtlı Değildir"
+            };
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        byte [] tokenBytes = Encoding.UTF8.GetBytes(token);
+        token = WebEncoders.Base64UrlEncode(tokenBytes); // bu şekil yapmazsan http üzerinden gönderirken hata yaşarsın
+        string body =
+            $"Şifre sıfırlamak için lütfen aşağıdaki linke tıklayınız. {configuration["Domain"]}/resetPassword?token={token}";
+        await emailService.SendEmailAsync(user.Email, "Şifre Sıfırlama İsteği",body);
+        return new()
+        {
+            Success = true,
+            Message = "Şifre Sıfırlama Bağlantısı Başarıyla Gönderildi"
+        };
+    }
+
+    public async Task<ResetPasswordResultDto> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+    {
+        var user = await userManager.FindByEmailAsync(resetPasswordDto.Email);
+        if (user is null)
+            return new()
+            {
+                Success = false,
+                Message = "Kullanıcı Bilgisi Bulunamadı"
+            };
+        var tokenBytes  = WebEncoders.Base64UrlDecode(resetPasswordDto.Token);
+        var token = Encoding.UTF8.GetString(tokenBytes);
+        var result = await userManager.ResetPasswordAsync(user,token,resetPasswordDto.NewPassword);
+        if (result.Succeeded)
+            return new()
+            {
+                Success = result.Succeeded,
+                Message = "Şifreniz Başarıyla Sıfırlanmıştır. Yeni Şifreniz İle Giriş Yapabilirsiniz"
+            };
+        return new()
+        {
+            Success = false,
+            Message = result.Errors.First().Description
         };
     }
 }
