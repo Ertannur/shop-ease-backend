@@ -14,5 +14,6 @@ namespace ETicaret.Domain.Entities
         public decimal Price { get; set; }
         public IEnumerable<ProductType> ProductTypes { get; set; }
         public IEnumerable<Image> Images { get; set; }
+        public ICollection<Favorite> Favorites { get; set; }
     }
 }

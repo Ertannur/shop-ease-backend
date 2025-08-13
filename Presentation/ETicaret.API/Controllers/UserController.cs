@@ -1,3 +1,4 @@
+using ETicaret.Application.CQRS.Commands.Favorites;
 using ETicaret.Application.CQRS.Commands.Users;
 using ETicaret.Application.CQRS.Queries.Users;
 using MediatR;
@@ -36,5 +37,14 @@ public class UserController(IMediator mediator) : ControllerBase
         if(result.Success)
             return Ok(result);
         return BadRequest(result);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> AddFavorite(AddFavoriteCommandRequest request)
+    {
+        var result = await mediator.Send(request);
+        if (!result.Success)
+            return NotFound(result);
+        return Ok(result);
     }
 }

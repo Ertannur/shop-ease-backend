@@ -102,8 +102,29 @@ public class ProductService(ETicaretDbContext context, IImageService imageServic
         };
         await context.Products.AddAsync(product);
         await context.SaveChangesAsync();
-        return new AddProductResultDto() {Message="Ürün eklendi",Success=true, ProductId = productId};
+        return new AddProductResultDto() { Message = "Ürün eklendi", Success = true, ProductId = productId };
     }
 
-    
+    // yeni eklendi
+    public async Task<bool> AddFavoritesAsync(Guid appUserId, Guid productId)
+    {
+        // Favoride var mı kontrol et
+        bool exists = await context.Favorites
+            .AnyAsync(f => f.AppUserId == appUserId && f.ProductId == productId);
+
+        if (exists)
+            return false;
+
+        var favorite = new Favorite
+        {
+          
+            AppUserId = appUserId,
+            ProductId = productId,
+            CreatedDate = DateTime.UtcNow
+        };
+
+        await context.Favorites.AddAsync(favorite);
+        await context.SaveChangesAsync();
+        return true;
+    }
 }
