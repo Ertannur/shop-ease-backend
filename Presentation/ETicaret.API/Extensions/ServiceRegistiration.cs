@@ -5,6 +5,7 @@ using ETicaret.API.Validations;
 using ETicaret.Application.Abstractions;
 using ETicaret.Application.Abstractions.Hubs;
 using ETicaret.Application.Abstractions.Storage;
+using ETicaret.Application.CQRS.Commands.Adresses;
 using ETicaret.Application.CQRS.Commands.Auths;
 using ETicaret.Application.CQRS.Commands.Users;
 using ETicaret.Application.CQRS.Handlers.Auths;
@@ -94,6 +95,7 @@ public static class ServiceRegistiration
        services.AddScoped<IValidator<UpdateUserCommandRequest>, UpdateUserValidator>();
        services.AddScoped<IValidator<ResetPasswordCommandRequest>, ResetPasswordValidator>();
        services.AddScoped<IValidator<ForgotPasswordCommandRequest>, ForgotPasswordValidator>();
+       services.AddScoped<IValidator<AddAdressCommandRequest>, AddAdressValidator>();
        services.AddFluentValidationAutoValidation();
        services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
        
@@ -108,6 +110,7 @@ public static class ServiceRegistiration
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<IStockService, StockService>();
         services.AddScoped<IProductDetailService, ProductDetailService>();
+        services.AddScoped<IAdressService, AdressService>();
         // Jwt Token Ayarlamaları
         services.AddAuthentication(opt =>
             {

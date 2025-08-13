@@ -5,10 +5,11 @@ using ETicaret.Application.DTOs.Users.Results;
 using ETicaret.Domain.Entities;
 using ETicaret.Persistence.Contexts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Persistence.Services;
 
-public class UserService(UserManager<AppUser> userManager) : IUserService
+public class UserService(UserManager<AppUser> userManager, ETicaretDbContext context) : IUserService
 {
     public async Task<UpdateUserResultDto> UpdateUserAsync(UpdateUserDto dto)
     {
@@ -62,5 +63,10 @@ public class UserService(UserManager<AppUser> userManager) : IUserService
         if (result.Succeeded)
             return new(){Success = true, Message = "Şifreniz Başarıyla Güncellendi"};
         return new() { Success = false, Message = $"Şifreniz Güncellenirken Bir Hata Meydana Geldi" };
+    }
+
+    public async Task<AppUser?> FindUserByIdAsync(Guid userId)
+    {
+        return await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
     }
 }

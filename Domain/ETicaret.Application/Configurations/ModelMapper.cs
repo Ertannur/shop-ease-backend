@@ -1,3 +1,4 @@
+using ETicaret.Application.CQRS.Commands.Adresses;
 using ETicaret.Application.CQRS.Commands.Auths;
 using ETicaret.Application.CQRS.Commands.Users;
 using ETicaret.Application.CQRS.Queries.Products;
@@ -12,6 +13,7 @@ using ETicaret.Application.DTOs.Users.Results;
 using Riok.Mapperly.Abstractions;
 using ETicaret.Application.DTOs.Products.Requests;
 using ETicaret.Application.CQRS.Commands.Products;
+using ETicaret.Application.DTOs.Adresses.Requests;
 
 namespace ETicaret.Application.Configurations;
 [Mapper]
@@ -28,4 +30,5 @@ public static partial class ModelMapper
     public static partial UserChangePasswordDto MapUserChangePasswordDto(UserChangePasswordCommandRequest request);
     public static partial AddProductRequest MapAddProductRequest(AddProductCommandRequest request);
     public static partial ResetPasswordDto MapResetPasswordDto(ResetPasswordCommandRequest  resetPasswordCommandRequest);
+    public static partial AddAdressDto MapAddAdressDto(AddAdressCommandRequest request);
 }

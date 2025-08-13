@@ -16,6 +16,7 @@ namespace ETicaret.Persistence.Contexts
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<Adress> Adresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
