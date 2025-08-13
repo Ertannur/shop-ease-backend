@@ -20,7 +20,7 @@ namespace ETicaret.Application.CQRS.Handlers.Products
             var mapper = ModelMapper.MapAddProductRequest(request);
             var result = await productService.AddProductAsync(mapper);
             
-            return new AddProductCommandResult() { Message = result.Message, Success=result.Success };
+            return new AddProductCommandResult() { Message = result.Message, Success=result.Success,  ProductId=result.ProductId };
 
         }
     }

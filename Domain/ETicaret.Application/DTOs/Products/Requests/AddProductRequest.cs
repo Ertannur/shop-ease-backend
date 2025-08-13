@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace ETicaret.Application.DTOs.Products.Requests
 {
@@ -12,8 +13,6 @@ namespace ETicaret.Application.DTOs.Products.Requests
         public string Description { get; set; }
         public decimal Price { get; set; }
         public Guid CategoryId { get; set; }
-        public Guid ProductTypeId { get; set; }
-
-        public List<StockInfoDto> Stocks { get; set; } = new();
+      
     }
 }

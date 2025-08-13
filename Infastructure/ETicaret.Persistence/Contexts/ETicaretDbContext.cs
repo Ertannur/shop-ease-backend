@@ -12,7 +12,6 @@ namespace ETicaret.Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Color> Colors { get; set; }
-        public DbSet<Size> Sizes { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Image> Images { get; set; }

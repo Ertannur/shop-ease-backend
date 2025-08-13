@@ -1,4 +1,6 @@
 using ETicaret.Application.Abstractions;
+using ETicaret.Application.Abstractions.Storage.Azure;
+using ETicaret.Application.DTOs.Images.Requests;
 using ETicaret.Application.DTOs.Products.Results;
 using ETicaret.Application.DTOs.Products.Requests;
 using ETicaret.Domain.Entities;
@@ -9,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Persistence.Services;
 
-public class ProductService(ETicaretDbContext context) : IProductService
+public class ProductService(ETicaretDbContext context, IImageService imageService) : IProductService
 {
     public async Task<GetProductResultDto> GetProductsAsync(string? category, int currentPage = 1, int pageSize = 8)
     {
@@ -67,9 +69,7 @@ public class ProductService(ETicaretDbContext context) : IProductService
                         Color = pt.Color != null
                             ? pt.Color.ColorType.ToString()
                             : null,
-                        Size = pt.Size != null
-                            ? pt.Size.Name
-                            : null,
+                        Size = pt.Size,
                         Stock = pt.Stock != null
                             ? pt.Stock.Quantity
                             : 0
@@ -89,8 +89,10 @@ public class ProductService(ETicaretDbContext context) : IProductService
     //eklendi
     public async Task<AddProductResultDto> AddProductAsync(AddProductRequest dto)
     {
+        Guid productId = Guid.NewGuid();
         var product = new Product
         {
+            Id = productId,
             Name = dto.Name,
             Description = dto.Description,
             Price = dto.Price,
@@ -98,11 +100,9 @@ public class ProductService(ETicaretDbContext context) : IProductService
             CreatedDate = DateTime.UtcNow,
             IsDeleted = false
         };
-
-        var result =
         await context.Products.AddAsync(product);
         await context.SaveChangesAsync();
-        return new AddProductResultDto() {Message="Ürün eklendi",Success=true};
+        return new AddProductResultDto() {Message="Ürün eklendi",Success=true, ProductId = productId};
     }
 
     

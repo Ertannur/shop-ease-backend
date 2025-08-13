@@ -105,6 +105,9 @@ public static class ServiceRegistiration
         services.AddScoped<ITokenService, TokenHandler>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IImageService, ImageService>();
+        services.AddScoped<IStockService, StockService>();
+        services.AddScoped<IProductDetailService, ProductDetailService>();
         // Jwt Token Ayarlamaları
         services.AddAuthentication(opt =>
             {

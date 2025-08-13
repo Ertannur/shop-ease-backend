@@ -26,17 +26,19 @@ public class ProductController(IMediator mediator, IStorageService storageServic
         var result = await mediator.Send(new  GetProductByIdQuery() { Id = id });
         return Ok(result);
     }
-
+    
     [HttpPost("[action]")]
-    [Authorize(Roles = "Admin")]
+    [AllowAnonymous]
     public async Task<IActionResult> AddProduct(AddProductCommandRequest addProductCommandRequest)
     {
+      
         var result=await mediator.Send(addProductCommandRequest);
         if (result.Success) 
             return Ok(result);
         return BadRequest(result);
+        
     }
-
+    /*
     [HttpPost("[action]")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateProduct()
@@ -50,12 +52,6 @@ public class ProductController(IMediator mediator, IStorageService storageServic
     {
         return Ok();
     }
-
-    [HttpPost("[action]")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Upload(Guid id)
-    {
-        var result = await storageService.UploadAsync("photo-images", Request.Form.Files);
-        return Ok();
-    }
+    */
+    
 }

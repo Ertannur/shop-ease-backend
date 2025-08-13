@@ -8,8 +8,7 @@ namespace ETicaret.Domain.Entities
         public Guid ProductId { get; set; }
         public Color Color { get; set; }
         public Guid ColorId { get; set; }
-        public Size Size { get; set; }
-        public Guid SizeId { get; set; }
+        public string Size { get; set; }
         public Stock Stock { get; set; }
     }
 }
