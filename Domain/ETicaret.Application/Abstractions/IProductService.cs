@@ -9,5 +9,6 @@ public interface IProductService
     Task<GetProductByIdResultDto> GetProductByIdAsync(Guid id);
     Task<AddProductResultDto> AddProductAsync(AddProductRequest dto);
     Task<bool> AddFavoritesAsync(Guid appUserId, Guid productId);
-
+    Task<bool> RemoveFavoritesAsync(Guid productId);
+    Task<IEnumerable<GetFavoriteProductDto>> GetFavoritesAsync();
 }

@@ -39,12 +39,5 @@ public class UserController(IMediator mediator) : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpPost("[action]")]
-    public async Task<IActionResult> AddFavorite(AddFavoriteCommandRequest request)
-    {
-        var result = await mediator.Send(request);
-        if (!result.Success)
-            return NotFound(result);
-        return Ok(result);
-    }
+    
 }

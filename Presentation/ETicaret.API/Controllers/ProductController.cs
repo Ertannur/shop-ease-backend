@@ -1,5 +1,8 @@
+using ETicaret.Application.Abstractions;
 using ETicaret.Application.Abstractions.Storage;
+using ETicaret.Application.CQRS.Commands.Favorites;
 using ETicaret.Application.CQRS.Commands.Products;
+using ETicaret.Application.CQRS.Queries.Favorites;
 using ETicaret.Application.CQRS.Queries.Products;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ETicaret.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class ProductController(IMediator mediator, IStorageService storageService) : ControllerBase
+public class ProductController(IMediator mediator, IProductService productService) : ControllerBase
 {
     [HttpGet("[action]")]
     [AllowAnonymous]
@@ -53,5 +56,30 @@ public class ProductController(IMediator mediator, IStorageService storageServic
         return Ok();
     }
     */
-    
+    [Authorize(Roles = "Admin, User")]
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetFavoriteProducts()
+    {
+        var result = await mediator.Send(new GetFavoritesProductQuery());
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin, User")]
+    [HttpPost("[action]")]
+    public async Task<IActionResult> DeleteFavoriteProduct(DeleteFavoriteProductCommandRequest removeFavoriteProductCommandRequest)
+    {
+        var result = await mediator.Send(removeFavoriteProductCommandRequest);
+        if(result)
+            return Ok();
+        return BadRequest(result);
+    }
+    [Authorize(Roles = "Admin, User")]
+    [HttpPost("[action]")]
+    public async Task<IActionResult> AddFavoriteProduct(AddFavoriteCommandRequest request)
+    {
+        var result = await mediator.Send(request);
+        if (!result.Success)
+            return NotFound(result);
+        return Ok(result);
+    }
 }

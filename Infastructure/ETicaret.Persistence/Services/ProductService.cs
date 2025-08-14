@@ -7,12 +7,19 @@ using ETicaret.Domain.Entities;
 using ETicaret.Domain.Enums;
 using ETicaret.Persistence.Contexts;
 using ETicaret.Persistence.Paggination;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Persistence.Services;
 
-public class ProductService(ETicaretDbContext context, IImageService imageService) : IProductService
+public class ProductService(ETicaretDbContext context, IHttpContextAccessor httpContextAccessor) : IProductService
 {
+    private async Task<AppUser?> CurrentUser()
+    {
+        var userName = httpContextAccessor?.HttpContext?.User?.Identity?.Name;
+        AppUser? appUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        return appUser;
+    }
     public async Task<GetProductResultDto> GetProductsAsync(string? category, int currentPage = 1, int pageSize = 8)
     {
         var products = context.Products.Include(x => x.Category)
@@ -97,7 +104,6 @@ public class ProductService(ETicaretDbContext context, IImageService imageServic
             Description = dto.Description,
             Price = dto.Price,
             CategoryId = dto.CategoryId,
-            CreatedDate = DateTime.UtcNow,
             IsDeleted = false
         };
         await context.Products.AddAsync(product);
@@ -117,14 +123,44 @@ public class ProductService(ETicaretDbContext context, IImageService imageServic
 
         var favorite = new Favorite
         {
-          
             AppUserId = appUserId,
             ProductId = productId,
-            CreatedDate = DateTime.UtcNow
         };
 
         await context.Favorites.AddAsync(favorite);
         await context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> RemoveFavoritesAsync(Guid productId)
+    {
+        AppUser? currentUser = await CurrentUser();
+        if (currentUser == null)
+            return false;
+        var favorite =  await context.Favorites.FirstOrDefaultAsync(f => f.AppUserId == currentUser.Id && f.ProductId == productId);
+        if (favorite == null)
+            return false;
+        context.Favorites.Remove(favorite);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<IEnumerable<GetFavoriteProductDto>> GetFavoritesAsync()
+    {
+        AppUser? currentUser = await CurrentUser();
+        if (currentUser == null)
+            return new List<GetFavoriteProductDto>();
+        var getFavoriteProductDto = await context.Favorites
+            .AsSplitQuery()
+            .Where(f => f.AppUserId == currentUser.Id)
+            .Select(x=> new GetFavoriteProductDto()
+            {
+                ProductId = x.ProductId,
+                Price = x.Product.Price,
+                Title = x.Product.Name,
+                ImageUrl = x.Product.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+            }).ToListAsync();
+            
+        return getFavoriteProductDto;
     }
 }
