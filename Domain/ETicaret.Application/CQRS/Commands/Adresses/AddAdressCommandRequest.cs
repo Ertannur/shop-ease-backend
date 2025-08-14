@@ -5,6 +5,7 @@ namespace ETicaret.Application.CQRS.Commands.Adresses;
 
 public class AddAdressCommandRequest : IRequest<AddAdressCommandResult>
 {
+    public string Title { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
     public string Email { get; set; }

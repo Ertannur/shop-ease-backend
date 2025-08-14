@@ -23,6 +23,7 @@ public class AdressService(ETicaretDbContext context)  : IAdressService
         appUsers.Add(user);
         Adress adress = new Adress()
         {
+            Title = dto.Title,
             Name = dto.Name,
             Surname = dto.Surname,
             City = dto.City,
@@ -42,5 +43,23 @@ public class AdressService(ETicaretDbContext context)  : IAdressService
             Success = true,
             Message = "Adres Bilgisi Başarıyla Eklendi"
         };
+    }
+
+    public async Task<IEnumerable<GetUserAdressResultDto>> GetUserAdressAsync(Guid userId)
+    {
+        IEnumerable<Adress> adresses = await context.Adresses.Where(x => x.AppUsers.Any(x => x.Id == userId) && x.IsDeleted == false).ToListAsync();
+        return adresses.Select(x=> new GetUserAdressResultDto()
+        {
+            AdressId = x.Id,
+            Title = x.Title,
+            Name = x.Name,
+            Surname = x.Surname,
+            City = x.City,
+            District = x.District,
+            Address = x.Address,
+            Email = x.Email,
+            Phone = x.Phone,
+            PostCode = x.PostCode
+        });
     }
 }

@@ -22,6 +22,8 @@ public class AddAdressValidator  : AbstractValidator<AddAdressCommandRequest>
         RuleFor(x=> x.Email).NotEmpty().WithMessage("Email Adresi Zorunludur")
             .EmailAddress().WithMessage("Email Adresi Zorunludur");
         RuleFor(x=>x.Phone).Matches(@"^0?\d{10}$").WithMessage("Telefon Numarasını Doğru Yazınız");
+        RuleFor(x => x.Title).NotEmpty().WithMessage("Adres Başlığı Zorunludur")
+            .MinimumLength(2).WithMessage("Minimum 2 Karakter Olmalıdır");
 
     }
 }
