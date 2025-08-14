@@ -15,5 +15,6 @@ namespace ETicaret.Domain.Entities
         public IEnumerable<ProductType> ProductTypes { get; set; }
         public IEnumerable<Image> Images { get; set; }
         public ICollection<Favorite> Favorites { get; set; }
+        public ICollection<BasketItem> BasketItems { get; set; }
     }
 }

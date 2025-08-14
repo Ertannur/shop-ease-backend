@@ -18,9 +18,6 @@ public class AdressService(ETicaretDbContext context)  : IAdressService
                 Success = false,
                 Message = "Kullanıcı Bulunamadı"
             };
-        ICollection<AppUser> appUsers = new List<AppUser>();
-        context.Users.Attach(user);
-        appUsers.Add(user);
         Adress adress = new Adress()
         {
             Title = dto.Title,
@@ -34,7 +31,7 @@ public class AdressService(ETicaretDbContext context)  : IAdressService
             Phone = dto.Phone,
             CreatedDate = DateTime.UtcNow,
             IsDeleted = false,
-            AppUsers = appUsers
+            UserId = dto.UserId,
         };
         await context.Adresses.AddAsync(adress);
         await context.SaveChangesAsync();
@@ -47,7 +44,7 @@ public class AdressService(ETicaretDbContext context)  : IAdressService
 
     public async Task<IEnumerable<GetUserAdressResultDto>> GetUserAdressAsync(Guid userId)
     {
-        IEnumerable<Adress> adresses = await context.Adresses.Where(x => x.AppUsers.Any(x => x.Id == userId) && x.IsDeleted == false).ToListAsync();
+        IEnumerable<Adress> adresses = await context.Adresses.Where(x => x.UserId == userId && x.IsDeleted == false).ToListAsync();
         return adresses.Select(x=> new GetUserAdressResultDto()
         {
             AdressId = x.Id,

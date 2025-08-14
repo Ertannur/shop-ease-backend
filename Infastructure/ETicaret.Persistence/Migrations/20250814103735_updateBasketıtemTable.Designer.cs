@@ -4,6 +4,7 @@ using ETicaret.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETicaret.Persistence.Migrations
 {
     [DbContext(typeof(ETicaretDbContext))]
-    partial class ETicaretDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250814103735_updateBasketıtemTable")]
+    partial class updateBasketıtemTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace ETicaret.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AdressAppUser", b =>
+                {
+                    b.Property<Guid>("AdressesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AppUsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AdressesId", "AppUsersId");
+
+                    b.HasIndex("AppUsersId");
+
+                    b.ToTable("AdressAppUser");
+                });
 
             modelBuilder.Entity("ETicaret.Domain.Entities.Adress", b =>
                 {
@@ -73,12 +91,7 @@ namespace ETicaret.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Adresses");
                 });
@@ -197,9 +210,6 @@ namespace ETicaret.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AdressId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -213,8 +223,6 @@ namespace ETicaret.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdressId");
 
                     b.HasIndex("UserId");
 
@@ -358,37 +366,6 @@ namespace ETicaret.Persistence.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Images");
-                });
-
-            modelBuilder.Entity("ETicaret.Domain.Entities.Order", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AdressId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BasketId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdressId");
-
-                    b.HasIndex("BasketId")
-                        .IsUnique();
-
-                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("ETicaret.Domain.Entities.Product", b =>
@@ -595,22 +572,23 @@ namespace ETicaret.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ETicaret.Domain.Entities.Adress", b =>
+            modelBuilder.Entity("AdressAppUser", b =>
                 {
-                    b.HasOne("ETicaret.Domain.Entities.AppUser", "User")
-                        .WithMany("Adresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.HasOne("ETicaret.Domain.Entities.Adress", null)
+                        .WithMany()
+                        .HasForeignKey("AdressesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("ETicaret.Domain.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ETicaret.Domain.Entities.Basket", b =>
                 {
-                    b.HasOne("ETicaret.Domain.Entities.Adress", null)
-                        .WithMany("Baskets")
-                        .HasForeignKey("AdressId");
-
                     b.HasOne("ETicaret.Domain.Entities.AppUser", "User")
                         .WithMany("Baskets")
                         .HasForeignKey("UserId")
@@ -676,25 +654,6 @@ namespace ETicaret.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ETicaret.Domain.Entities.Order", b =>
-                {
-                    b.HasOne("ETicaret.Domain.Entities.Adress", "Adress")
-                        .WithMany()
-                        .HasForeignKey("AdressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ETicaret.Domain.Entities.Basket", "Basket")
-                        .WithOne("Order")
-                        .HasForeignKey("ETicaret.Domain.Entities.Order", "BasketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Adress");
-
-                    b.Navigation("Basket");
                 });
 
             modelBuilder.Entity("ETicaret.Domain.Entities.Product", b =>
@@ -789,15 +748,8 @@ namespace ETicaret.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ETicaret.Domain.Entities.Adress", b =>
-                {
-                    b.Navigation("Baskets");
-                });
-
             modelBuilder.Entity("ETicaret.Domain.Entities.AppUser", b =>
                 {
-                    b.Navigation("Adresses");
-
                     b.Navigation("Baskets");
 
                     b.Navigation("Favorites");
@@ -806,9 +758,6 @@ namespace ETicaret.Persistence.Migrations
             modelBuilder.Entity("ETicaret.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
-
-                    b.Navigation("Order")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ETicaret.Domain.Entities.Category", b =>

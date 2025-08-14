@@ -13,5 +13,7 @@ public class Adress : BaseEntity
     public string City { get; set; }
     public string District { get; set; }
     public string PostCode { get; set; }
-    public ICollection<AppUser> AppUsers { get; set; }
+    public AppUser User { get; set; }
+    public Guid? UserId { get; set; }
+    public ICollection<Basket>  Baskets { get; set; }
 }

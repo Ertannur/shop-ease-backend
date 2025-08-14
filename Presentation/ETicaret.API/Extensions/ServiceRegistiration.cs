@@ -77,7 +77,11 @@ public static class ServiceRegistiration
             typeof(RegisterUserCommandHandler).Assembly));
         // DbContext ayarlaması yapıldı 
         services.AddDbContext<ETicaretDbContext>(opt =>
-            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        {
+            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            opt.EnableSensitiveDataLogging();
+            opt.EnableDetailedErrors();
+        });
         services.AddIdentity<AppUser, AppRole>(opt => // identity db context ayarları yapıldı
             {
                 opt.User.RequireUniqueEmail = true;
@@ -111,6 +115,8 @@ public static class ServiceRegistiration
         services.AddScoped<IStockService, StockService>();
         services.AddScoped<IProductDetailService, ProductDetailService>();
         services.AddScoped<IAdressService, AdressService>();
+        services.AddScoped<IBasketService, BasketService>();
+        services.AddScoped<IBasketItemService, BasketItemService>();
         // Jwt Token Ayarlamaları
         services.AddAuthentication(opt =>
             {

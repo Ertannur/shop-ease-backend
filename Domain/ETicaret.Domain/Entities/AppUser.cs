@@ -11,4 +11,5 @@ public class AppUser : IdentityUser<Guid>
     public DateOnly? DateOfBirth { get; set; }
     public ICollection<Favorite> Favorites { get; set; }
     public ICollection<Adress> Adresses { get; set; }
+    public ICollection<Basket> Baskets { get; set; }
 }
