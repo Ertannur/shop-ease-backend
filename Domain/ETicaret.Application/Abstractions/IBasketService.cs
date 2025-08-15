@@ -9,4 +9,5 @@ public interface IBasketService
     Task AddItemToBasketAsync(AddItemToBasketDto addItemToBasketDto);
     Task UpdateQuantityAsync(UpdateBasketItemDto updateBasketItemDto);
     Task RemoveBasketItemAsync(Guid basketItemId);
+    Task<Basket?> GetUserActiveBasketAsync();
 }

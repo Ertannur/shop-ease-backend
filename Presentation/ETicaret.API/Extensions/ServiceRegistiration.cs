@@ -117,6 +117,7 @@ public static class ServiceRegistiration
         services.AddScoped<IAdressService, AdressService>();
         services.AddScoped<IBasketService, BasketService>();
         services.AddScoped<IBasketItemService, BasketItemService>();
+        services.AddScoped<IOrderService, OrderService>();
         // Jwt Token Ayarlamaları
         services.AddAuthentication(opt =>
             {

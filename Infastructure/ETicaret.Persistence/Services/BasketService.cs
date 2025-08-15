@@ -19,7 +19,7 @@ public class BasketService(IHttpContextAccessor httpContextAccessor, UserManager
                 .FirstOrDefaultAsync(x => x.UserName == userName);
             var _basket = from basket in appUser.Baskets
                 join order in context.Set<Order>()
-                    on basket.Id equals order.BasketId into BasketOrders
+                    on basket.Id equals order.Id into BasketOrders
                 from order in BasketOrders.DefaultIfEmpty()
                 select new
                 {
@@ -89,5 +89,11 @@ public class BasketService(IHttpContextAccessor httpContextAccessor, UserManager
             context.Remove(basketItem);
             await context.SaveChangesAsync();
         }
+    }
+
+    public async Task<Basket?> GetUserActiveBasketAsync()
+    {
+        Basket? basket = await ContextUser();
+        return basket;
     }
 }

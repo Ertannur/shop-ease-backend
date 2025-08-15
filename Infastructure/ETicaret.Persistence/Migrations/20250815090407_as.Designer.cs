@@ -4,6 +4,7 @@ using ETicaret.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETicaret.Persistence.Migrations
 {
     [DbContext(typeof(ETicaretDbContext))]
-    partial class ETicaretDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250815090407_as")]
+    partial class @as
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -363,9 +366,13 @@ namespace ETicaret.Persistence.Migrations
             modelBuilder.Entity("ETicaret.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AdressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BasketId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -380,6 +387,9 @@ namespace ETicaret.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AdressId");
+
+                    b.HasIndex("BasketId")
+                        .IsUnique();
 
                     b.ToTable("Order");
                 });
@@ -681,7 +691,7 @@ namespace ETicaret.Persistence.Migrations
 
                     b.HasOne("ETicaret.Domain.Entities.Basket", "Basket")
                         .WithOne("Order")
-                        .HasForeignKey("ETicaret.Domain.Entities.Order", "Id")
+                        .HasForeignKey("ETicaret.Domain.Entities.Order", "BasketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
