@@ -11,8 +11,6 @@ namespace ETicaret.Application.CQRS.Commands.Favorites
 {
     public class AddFavoriteCommandRequest:IRequest<AddFavoritesCommandResult>
     {
-        
-        public Guid UserId { get; set; }
 
         public Guid ProductId { get; set; }
 

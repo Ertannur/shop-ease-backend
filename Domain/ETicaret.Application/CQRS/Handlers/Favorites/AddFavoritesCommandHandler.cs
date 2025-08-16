@@ -19,27 +19,16 @@ namespace ETicaret.Application.CQRS.Handlers.Favorites
 
         public async Task<AddFavoritesCommandResult> Handle(AddFavoriteCommandRequest request, CancellationToken cancellationToken)
         {
-            // Servis çağrısı
-            var result = await _productService.AddFavoritesAsync(request.UserId, request.ProductId);
+            
+            var result = await _productService.AddFavoritesAsync(request.ProductId);
 
-            if (result) // Favori eklendiyse
-            {
                 return new AddFavoritesCommandResult
                 {
-                    Success = true,
-                    Message = "Ürün favorilere eklendi.",
-                    ProductId = request.ProductId
+                    Success = result.Success,
+                    Message = result.Message ,
+                    ProductId = result.ProductId
                 };
-            }
-            else // Eklenemediyse
-            {
-                return new AddFavoritesCommandResult
-                {
-                    Success = false,
-                    Message = "Ürün zaten favorilerde veya eklenirken hata oluştu.",
-                    ProductId = request.ProductId
-                };
-            }
+          
         }
     }
 }

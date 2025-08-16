@@ -48,6 +48,10 @@ namespace ETicaret.Persistence.Contexts
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.SetNull); 
             
+            modelBuilder.Entity<ProductType>()
+                .HasIndex(pt => new { pt.ProductId, pt.ColorId, pt.Size })
+                .IsUnique(); 
+            
             base.OnModelCreating(modelBuilder); 
 
           

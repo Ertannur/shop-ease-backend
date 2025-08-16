@@ -9,5 +9,13 @@
       <jdbc-url>Server=tcp:guncu.database.windows.net,1433;Initial Catalog=ETicaretDB;Persist Security Info=False;User ID=CanGuncu16;Password=Umut135.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="Microsoft SQL Server (JetBrains) [2]" uuid="c7e2fd33-cbee-4c75-9998-2f90c1ec899a">
+      <driver-ref>sqlserver.jb</driver-ref>
+      <synchronize>true</synchronize>
+      <configured-by-url>true</configured-by-url>
+      <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
+      <jdbc-url>Server=tcp:eticaretdb.database.windows.net,1433;Initial Catalog=ETicaretDB;Persist Security Info=False;User ID=CanGuncu16;Password=Umut135.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

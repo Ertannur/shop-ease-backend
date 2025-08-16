@@ -87,7 +87,7 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
 
         if (productDto == null)
         {
-            throw new Exception("Ürün bulunamadı.");
+            return new();
         }
 
         return productDto;
@@ -112,24 +112,52 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
     }
 
     // yeni eklendi
-    public async Task<bool> AddFavoritesAsync(Guid appUserId, Guid productId)
+    public async Task<AddFavoriteProductResultDto> AddFavoritesAsync(Guid productId)
     {
+        var currentUser = await CurrentUser();
+        if (currentUser == null)
+        {
+            return new()
+            {
+                Success = false,
+                Message = "Kullanıcı Bilgisi Bulunamadı",
+                ProductId = null
+            };
+        }
+        var currentProduct = await context.Products.FindAsync(productId);
+        if (currentProduct == null)
+            return new()
+            {
+                Success = false,
+                Message = "Ürün Bilgisi Bulunamadı",
+                ProductId = null
+            };
         // Favoride var mı kontrol et
         bool exists = await context.Favorites
-            .AnyAsync(f => f.AppUserId == appUserId && f.ProductId == productId);
+            .AnyAsync(f => f.AppUserId == currentUser.Id && f.ProductId == productId);
 
         if (exists)
-            return false;
+            return new ()
+            {
+                Success = false,
+                Message = "Ürün Hali Hazırda Favorilerde Bulunmaktadır",
+                ProductId = productId
+            };
 
         var favorite = new Favorite
         {
-            AppUserId = appUserId,
+            AppUserId = currentUser.Id,
             ProductId = productId,
         };
 
         await context.Favorites.AddAsync(favorite);
         await context.SaveChangesAsync();
-        return true;
+        return new()
+        {
+            Success = true,
+            Message = "Ürün Başarıyla Favorilere Eklenmiştir",
+            ProductId = productId
+        };
     }
 
     public async Task<bool> RemoveFavoritesAsync(Guid productId)
