@@ -69,4 +69,14 @@ public class UserService(UserManager<AppUser> userManager, ETicaretDbContext con
     {
         return await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
     }
+
+    public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenDate)
+    {
+        if (user != null)
+        {
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiration = accessTokenDate.AddDays(1);
+            await userManager.UpdateAsync(user);
+        }
+    }
 }

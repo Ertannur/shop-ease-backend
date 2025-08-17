@@ -10,4 +10,5 @@ public interface IUserService
     Task<GetUserByIdResultDto?>  GetUserByIdAsync(Guid userId);
     Task<UserChangePasswordResultDto> ChangePasswordAsync(UserChangePasswordDto dto);
     Task<AppUser?> FindUserByIdAsync(Guid userId);
+    Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenDate);
 }

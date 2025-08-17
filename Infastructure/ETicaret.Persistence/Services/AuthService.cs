@@ -1,17 +1,19 @@
 using System.Text;
 using ETicaret.Application.Abstractions;
+using ETicaret.Application.DTOs;
 using ETicaret.Application.DTOs.Auths.Requests;
 using ETicaret.Application.DTOs.Auths.Results;
 using ETicaret.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace ETicaret.Persistence.Services;
 
 public class AuthService(UserManager<AppUser> userManager, IRoleService roleService, 
     SignInManager<AppUser> signInManager,ITokenService tokenService
-    ,IEmailService emailService, IConfiguration configuration) : IAuthService
+    ,IEmailService emailService, IConfiguration configuration, IUserService userService) : IAuthService
 {
     public async Task<RegisterResultDto> RegisterAsync(RegisterDto registerDto)
     {
@@ -57,6 +59,7 @@ public class AuthService(UserManager<AppUser> userManager, IRoleService roleServ
         {
             await signInManager.PasswordSignInAsync(user, loginDto.Password, true, false);
             var token = await tokenService.CreateAccessTokenAsync(user.Id.ToString());
+            await userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration);
             return new()
             {
                 Success = true,
@@ -70,6 +73,30 @@ public class AuthService(UserManager<AppUser> userManager, IRoleService roleServ
         {
             Success = false,
             Message = "E Posta Adresiniz veya Şifreniz Hatalı"
+        };
+    }
+
+    public async Task<LoginResultDto> RefreshTokenLoginAsync(string refreshToken)
+    {
+        AppUser? user = await userManager.Users.FirstOrDefaultAsync(x=> x.RefreshToken == refreshToken);
+        if (user != null && user?.RefreshTokenExpiration > DateTime.UtcNow)
+        {
+            Token token = await tokenService.CreateAccessTokenAsync(user.Id.ToString());
+            await userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration);
+            return new()
+            {
+                Success = true,
+                Message = "Giriş İşlemi Başarıyla Gerçekleştirilmiştir",
+                Token = token,
+                UserId = user.Id
+            };
+            
+        }
+
+        return new()
+        {
+            Success = false,
+            Message = "Refresh Token Süresi Geçmiştir"
         };
     }
 

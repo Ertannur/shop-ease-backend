@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using ETicaret.Application.Abstractions;
 using ETicaret.Domain.Entities;
@@ -35,6 +36,15 @@ public class TokenHandler(IConfiguration configuration, UserManager<AppUser> use
             claims: claims);
         JwtSecurityTokenHandler jwtTokenHandler = new();
         token.AccessToken = jwtTokenHandler.WriteToken(securityToken);
+        token.RefreshToken =  CreateRefreshToken();
         return token;
+    }
+
+    private string CreateRefreshToken()
+    {
+        var randomNumber = new byte[64];
+        var rnd = RandomNumberGenerator.Create();
+        rnd.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 }

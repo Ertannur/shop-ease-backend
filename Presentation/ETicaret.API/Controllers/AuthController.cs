@@ -26,6 +26,15 @@ namespace ETicaret.API.Controllers
 
         [HttpPost("[action]")]
         [AllowAnonymous]
+        public async Task<IActionResult> RefreshTokenLogin(RefreshTokenLoginCommandRequest request)
+        {
+            var result = await authService.RefreshTokenLoginAsync(request.RefreshToken);
+            if(result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPost("[action]")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody]RegisterUserCommandRequest request)
         {
             var result = await mediator.Send(request);

@@ -12,4 +12,6 @@ public class AppUser : IdentityUser<Guid>
     public ICollection<Favorite> Favorites { get; set; }
     public ICollection<Adress> Adresses { get; set; }
     public ICollection<Basket> Baskets { get; set; }
+    public string? RefreshToken { get; set; }
+    public DateTime? RefreshTokenExpiration { get; set; }
 }
