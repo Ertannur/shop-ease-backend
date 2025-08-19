@@ -9,6 +9,12 @@ public class OrderService(ETicaretDbContext context, IBasketService basketServic
     public async Task CreateOrderAsync(CreateOrderDto dto)
     {
         var basket = await basketService.GetUserActiveBasketAsync();
+        if(basket is not null)
+            foreach (var item in basket.BasketItems)
+            {
+                
+            }
+
         await context.Order.AddAsync(new()
         {
             AdressId = dto.AdressId,

@@ -7,4 +7,5 @@ public interface IStockService
 {
     Task<AddStockResultDto> AddStockAsync(IEnumerable<AddStockDto> dtos);
     Task<bool> AddStockAsync(AddStockDto dto);
+    Task<bool> UpdateStock();
 }

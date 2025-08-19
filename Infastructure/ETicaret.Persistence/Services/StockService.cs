@@ -40,4 +40,9 @@ public class StockService(ETicaretDbContext context) : IStockService
         await context.SaveChangesAsync();
         return true;
     }
+
+    public Task<bool> UpdateStock()
+    {
+        throw new NotImplementedException();
+    }
 }
