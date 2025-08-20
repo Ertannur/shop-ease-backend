@@ -9,7 +9,7 @@ public class GetUserAdressQueryHandler(IAdressService adressService) : IRequestH
 {
     public async Task<IEnumerable<GetUserAdressQueryResult>> Handle(GetUserAdressQuery request, CancellationToken cancellationToken)
     {
-       var result = await adressService.GetUserAdressAsync(request.UserId);
+       var result = await adressService.GetUserAdressAsync();
        return result.Select(x=> new GetUserAdressQueryResult()
        {
            Address = x.Address,

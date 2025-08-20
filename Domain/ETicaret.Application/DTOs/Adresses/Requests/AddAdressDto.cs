@@ -11,5 +11,5 @@ public class AddAdressDto
     public string City { get; set; }
     public string District { get; set; }
     public string PostCode { get; set; }
-    public Guid UserId { get; set; }
+  
 }

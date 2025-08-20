@@ -7,7 +7,7 @@ public interface IBasketService
 {
     Task<IEnumerable<BasketItem>> GetBasketItemsAsync();
     Task AddItemToBasketAsync(AddItemToBasketDto addItemToBasketDto);
-    Task UpdateQuantityAsync(UpdateBasketItemDto updateBasketItemDto);
-    Task RemoveBasketItemAsync(Guid basketItemId);
+    Task<bool> UpdateQuantityAsync(UpdateBasketItemDto updateBasketItemDto);
+    Task<bool> RemoveBasketItemAsync(Guid basketItemId);
     Task<Basket?> GetUserActiveBasketAsync();
 }

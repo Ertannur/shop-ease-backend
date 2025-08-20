@@ -14,5 +14,5 @@ public class AddAdressCommandRequest : IRequest<AddAdressCommandResult>
     public string City { get; set; }
     public string District { get; set; }
     public string PostCode { get; set; }
-    public Guid UserId { get; set; }
+   
 }

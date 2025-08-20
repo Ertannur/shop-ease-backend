@@ -3,15 +3,22 @@ using ETicaret.Application.DTOs.Adresses.Requests;
 using ETicaret.Application.DTOs.Adresses.Results;
 using ETicaret.Domain.Entities;
 using ETicaret.Persistence.Contexts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Persistence.Services;
 
-public class AdressService(ETicaretDbContext context)  : IAdressService
+public class AdressService(ETicaretDbContext context, IHttpContextAccessor httpContextAccessor)  : IAdressService
 {
+    private async Task<AppUser?> CurrentUser()
+    {
+        var userName = httpContextAccessor?.HttpContext?.User?.Identity?.Name;
+        AppUser? appUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        return appUser;
+    }
     public async Task<AddAdressResultDto> AddAdressAsync(AddAdressDto dto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
+        var user = await CurrentUser();
         if (user == null)
             return new()
             {
@@ -31,7 +38,7 @@ public class AdressService(ETicaretDbContext context)  : IAdressService
             Phone = dto.Phone,
             CreatedDate = DateTime.UtcNow,
             IsDeleted = false,
-            UserId = dto.UserId,
+            UserId = user.Id,
         };
         await context.Adresses.AddAsync(adress);
         await context.SaveChangesAsync();
@@ -42,9 +49,14 @@ public class AdressService(ETicaretDbContext context)  : IAdressService
         };
     }
 
-    public async Task<IEnumerable<GetUserAdressResultDto>> GetUserAdressAsync(Guid userId)
+    public async Task<IEnumerable<GetUserAdressResultDto>> GetUserAdressAsync()
     {
-        IEnumerable<Adress> adresses = await context.Adresses.Where(x => x.UserId == userId && x.IsDeleted == false).ToListAsync();
+        var user = await CurrentUser();
+        if (user is null)
+        {
+            return new List<GetUserAdressResultDto>();
+        }
+        IEnumerable<Adress> adresses = await context.Adresses.Where(x => x.UserId == user.Id && x.IsDeleted == false).ToListAsync();
         return adresses.Select(x=> new GetUserAdressResultDto()
         {
             AdressId = x.Id,

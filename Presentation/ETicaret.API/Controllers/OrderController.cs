@@ -1,4 +1,6 @@
+using ETicaret.Application.Abstractions;
 using ETicaret.Application.CQRS.Commands.Orders;
+using ETicaret.Application.CQRS.Queries.Orders;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,5 +16,12 @@ public class OrderController(IMediator mediator) : ControllerBase
     {
         await mediator.Send(createOrderCommandResult);
         return Ok();
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> ListCurrentUserOrders()
+    {
+        var result = await mediator.Send(new GetCurrentUserOrdersQuery());
+        return Ok(result);
     }
 }

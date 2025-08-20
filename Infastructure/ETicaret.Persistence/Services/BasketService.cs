@@ -71,24 +71,28 @@ public class BasketService(IHttpContextAccessor httpContextAccessor, UserManager
        }
     }
 
-    public async Task UpdateQuantityAsync(UpdateBasketItemDto updateBasketItemDto)
+    public async Task<bool> UpdateQuantityAsync(UpdateBasketItemDto updateBasketItemDto)
     {
         BasketItem? basketItem = await context.BasketItems.FirstOrDefaultAsync(x => x.Id == updateBasketItemDto.BasketItemId);
         if (basketItem != null)
         {
             basketItem.Quantity = updateBasketItemDto.Quantity;
             await context.SaveChangesAsync();
+            return true;
         }
+        return false;
     }
 
-    public async Task RemoveBasketItemAsync(Guid basketItemId)
+    public async Task<bool> RemoveBasketItemAsync(Guid basketItemId)
     {
         BasketItem? basketItem = await context.BasketItems.FirstOrDefaultAsync(x => x.Id == basketItemId);
         if (basketItem != null)
         {
             context.Remove(basketItem);
             await context.SaveChangesAsync();
+            return true;
         }
+        return false;
     }
 
     public async Task<Basket?> GetUserActiveBasketAsync()

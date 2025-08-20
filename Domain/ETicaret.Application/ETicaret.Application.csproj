@@ -23,9 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="CQRS\Queries\Orders\" />
       <Folder Include="DTOs\Baskets\Results\" />
-      <Folder Include="DTOs\Orders\Results\" />
     </ItemGroup>
 
 </Project>

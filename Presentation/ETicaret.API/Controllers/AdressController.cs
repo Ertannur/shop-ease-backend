@@ -18,9 +18,9 @@ public class AdressController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetUserAdress(Guid userId)
+    public async Task<IActionResult> GetUserAdress()
     {
-        var result = await mediator.Send(new GetUserAdressQuery(){UserId = userId});
+        var result = await mediator.Send(new GetUserAdressQuery());
         return Ok(result);
     }
 }

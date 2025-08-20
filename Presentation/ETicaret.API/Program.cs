@@ -10,6 +10,10 @@ using Serilog.Sinks.MSSqlServer;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
 builder.Services.AddHttpContextAccessor(); // Client'tan gelen request neticesinde oluşturulan http context nesnesine katmanlardan erişebilmemizi sağlar
 builder.Services.AddServices(builder.Configuration);
 var logger = new LoggerConfiguration()
@@ -34,6 +38,7 @@ var logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
+
 
 builder.Services.AddStorage<AzureStorage>();
 var app = builder.Build();
@@ -63,7 +68,7 @@ app.Use(async (context, next) =>
     }
     LogContext.PushProperty("UserName", username); 
     LogContext.PushProperty("IpAdress", ip);
-    await next(); ; 
+    await next(); ;
 });
 app.MapControllers();
 app.MapHub<CustomerHub>("/chatHub");

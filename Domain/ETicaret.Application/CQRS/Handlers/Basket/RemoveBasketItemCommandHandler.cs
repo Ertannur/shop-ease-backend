@@ -9,7 +9,10 @@ public class RemoveBasketItemCommandHandler(IBasketService basketService) : IReq
 {
     public async Task<RemoveBasketItemCommandResult> Handle(RemoveBasketItemCommandRequest request, CancellationToken cancellationToken)
     {
-        await basketService.RemoveBasketItemAsync(request.BasketItemId);
-        return new();
+        var value = await basketService.RemoveBasketItemAsync(request.BasketItemId);
+        return new()
+        {
+            Success = value
+        };
     }
 }

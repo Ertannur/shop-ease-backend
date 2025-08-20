@@ -7,5 +7,5 @@ namespace ETicaret.Application.Abstractions;
 public interface IAdressService
 {
     Task<AddAdressResultDto> AddAdressAsync(AddAdressDto dto);
-    Task<IEnumerable<GetUserAdressResultDto>> GetUserAdressAsync(Guid userId);
+    Task<IEnumerable<GetUserAdressResultDto>> GetUserAdressAsync();
 }

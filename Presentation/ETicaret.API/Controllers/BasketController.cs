@@ -27,14 +27,18 @@ public class BasketController(IMediator mediator) : ControllerBase
     [HttpPost("[action]")]
     public async Task<IActionResult> UpdateQuantity(UpdateQuantityCommandRequest request)
     {
-        await mediator.Send(request);
-        return Ok();
+        var result = await mediator.Send(request);
+        if (result.Success)
+            return Ok();
+        return BadRequest();
     }
 
     [HttpPost("[action]")]
     public async Task<IActionResult> DeleteBasketItem(RemoveBasketItemCommandRequest request)
     {
-        await mediator.Send(request);
-        return Ok();
+        var result = await mediator.Send(request);
+        if (result.Success)
+            return Ok();
+        return BadRequest();
     }
 }

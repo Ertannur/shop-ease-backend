@@ -9,11 +9,14 @@ public class UpdateQuantityCommandHandler(IBasketService basketService) : IReque
 {
     public async Task<UpdateQuantityCommandResult> Handle(UpdateQuantityCommandRequest request, CancellationToken cancellationToken)
     {
-        await basketService.UpdateQuantityAsync(new()
+        var result = await basketService.UpdateQuantityAsync(new()
         {
             BasketItemId = request.BasketItemId,
             Quantity = request.Quantity
         });
-        return new();
+        return new()
+        {
+            Success = result
+        };
     }
 }
