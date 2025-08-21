@@ -1,4 +1,3 @@
-using ETicaret.Application.Abstractions;
 using ETicaret.Application.CQRS.Commands.Orders;
 using ETicaret.Application.CQRS.Queries.Orders;
 using MediatR;
@@ -18,10 +17,12 @@ public class OrderController(IMediator mediator) : ControllerBase
         return Ok();
     }
 
-    [HttpGet("[action]")]
+    [HttpPost("[action]")]
     public async Task<IActionResult> ListCurrentUserOrders()
     {
         var result = await mediator.Send(new GetCurrentUserOrdersQuery());
         return Ok(result);
     }
+    
+    
 }

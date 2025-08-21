@@ -78,7 +78,13 @@ public static class ServiceRegistiration
         // DbContext ayarlaması yapıldı 
         services.AddDbContext<ETicaretDbContext>(opt =>
         {
-            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), opt =>
+            {
+                opt.EnableRetryOnFailure(
+                    maxRetryCount:5,
+                    maxRetryDelay: TimeSpan.FromSeconds(20),
+                    errorNumbersToAdd: null);
+            });
             opt.EnableSensitiveDataLogging();
             opt.EnableDetailedErrors();
         });
