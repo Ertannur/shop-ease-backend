@@ -22,6 +22,7 @@ namespace ETicaret.Persistence.Contexts
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
         public DbSet<Order> Order { get; set; }
+        public DbSet<Chat> Chats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

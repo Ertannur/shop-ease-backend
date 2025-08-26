@@ -1,0 +1,40 @@
+﻿using ETicaret.Application.Abstractions;
+using ETicaret.Application.Abstractions.Hubs;
+using ETicaret.Application.DTOs.Chats.Requests;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ETicaret.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ChatController(IChatHubService chatHubService,IChatService chatService, IUserService userService) : ControllerBase
+{
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetChats(Guid userId, Guid toUserId)
+    {
+        var values = await chatService.GetChatsAsync(userId, toUserId);
+        return Ok(values);
+    }
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetUsers()
+    {
+        var results = await userService.GetUsersAsync();
+        return Ok(results);
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetSupport()
+    {
+        var user = await userService.GetSupportAsync();
+        return Ok(user);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> SendMessage(SendMessageDto sendMessageDto)
+    {
+        await chatService.SendMessageAsync(sendMessageDto);
+        await chatHubService.SendMessageAsync(sendMessageDto);
+        return Ok();
+    }    
+}
+

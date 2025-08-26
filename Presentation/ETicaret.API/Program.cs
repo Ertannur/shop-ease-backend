@@ -26,7 +26,7 @@ builder.Services.AddServices(builder.Configuration);
 
 // SignalR servisleri
 builder.Services.AddSignalR();
-builder.Services.AddScoped<CustomerHubService>();
+builder.Services.AddScoped<ChatHubService>();
 
 // Azure Storage
 builder.Services.AddStorage<AzureStorage>();
@@ -68,7 +68,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 // CORS ve HTTPS
+app.UseCors("SignalRPolicy");
 app.UseCors("CorsPolicy");
+
 app.UseHttpsRedirection();
 
 // Kimlik doğrulama

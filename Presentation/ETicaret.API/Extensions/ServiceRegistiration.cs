@@ -67,6 +67,14 @@ public static class ServiceRegistiration
                 policy.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
+                
+            });
+            opt.AddPolicy("SignalRPolicy", policy =>
+            {
+                policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             });
         });
         
@@ -124,6 +132,7 @@ public static class ServiceRegistiration
         services.AddScoped<IBasketService, BasketService>();
         services.AddScoped<IBasketItemService, BasketItemService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<IChatService, ChatService>();
         // Jwt Token Ayarlamaları
         services.AddAuthentication(opt =>
             {
@@ -153,7 +162,7 @@ public static class ServiceRegistiration
         services.AddScoped<IStorageService, StorageService>();
         
         // SignalR Konfigürasyonu
-        services.AddTransient<ICustomerHubService, CustomerHubService>();
+        services.AddTransient<IChatHubService, ChatHubService>();
         services.AddSignalR();
         return services;
     }

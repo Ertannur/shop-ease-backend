@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Domain\ETicaret.Application\ETicaret.Application.csproj" />
+      <ProjectReference Include="..\ETicaret.Persistence\ETicaret.Persistence.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 using ETicaret.Application.Abstractions;
-using ETicaret.Application.Configurations;
 using ETicaret.Application.DTOs.Users.Requests;
 using ETicaret.Application.DTOs.Users.Results;
 using ETicaret.Domain.Entities;
@@ -48,6 +47,26 @@ public class UserService(UserManager<AppUser> userManager, ETicaretDbContext con
             DateOfBirth = user.DateOfBirth.Value,
             Gender = user.Gender.Value,
             LastName = user.LastName
+        };
+    }
+
+    public async Task<IEnumerable<GetUserResultDto>> GetUsersAsync()
+    {
+        IEnumerable<AppUser> users = await context.Users.OrderBy(p => p.FirstName).ToListAsync();
+        return users.Select(x => new GetUserResultDto()
+        {
+            Id = x.Id.ToString(),
+            FullName = x.FirstName + " " + x.LastName
+        });
+    }
+
+    public async Task<GetUserResultDto?> GetSupportAsync()
+    {
+        var user = await context.Users.Where(x=> x.FirstName == "Müşteri").OrderBy(p => p.FirstName).FirstOrDefaultAsync();
+        return new()
+        {
+            Id = user.Id.ToString(),
+            FullName = user.FirstName + " " + user.LastName
         };
     }
 
