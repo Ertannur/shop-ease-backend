@@ -1,8 +1,7 @@
 ﻿using ETicaret.API.Validations;
 using ETicaret.Application.Abstractions;
 using ETicaret.Application.CQRS.Commands.Auths;
-using FluentValidation;
-using FluentValidation.Results;
+
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

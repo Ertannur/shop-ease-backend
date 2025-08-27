@@ -11,4 +11,5 @@ public interface IProductService
     Task<AddFavoriteProductResultDto> AddFavoritesAsync(Guid productId);
     Task<bool> RemoveFavoritesAsync(Guid productId);
     Task<IEnumerable<GetFavoriteProductDto>> GetFavoritesAsync();
+    Task<IEnumerable<GetProductResultDto>> GetDiscountProductsAsync(int currentPage = 1, int pageSize = 8);
 }

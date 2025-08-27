@@ -9,7 +9,7 @@ public interface IUserService
     Task<UpdateUserResultDto> UpdateUserAsync(UpdateUserDto dto);
     Task<GetUserByIdResultDto?>  GetUserByIdAsync(Guid userId);
     Task<IEnumerable<GetUserResultDto>> GetUsersAsync();
-    Task<GetUserResultDto?> GetSupportAsync();
+    Task<IEnumerable<GetUserResultDto>> GetSupportAsync();
     Task<UserChangePasswordResultDto> ChangePasswordAsync(UserChangePasswordDto dto);
     Task<AppUser?> FindUserByIdAsync(Guid userId);
     Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenDate);

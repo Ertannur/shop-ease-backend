@@ -71,7 +71,7 @@ public static class ServiceRegistiration
             });
             opt.AddPolicy("SignalRPolicy", policy =>
             {
-                policy.WithOrigins("http://localhost:4200")
+                policy.WithOrigins("http://localhost:4200", "http://localhost:3000", "http://192.168.1.30:3000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();

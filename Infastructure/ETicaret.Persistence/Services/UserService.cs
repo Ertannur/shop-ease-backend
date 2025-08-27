@@ -3,13 +3,20 @@ using ETicaret.Application.DTOs.Users.Requests;
 using ETicaret.Application.DTOs.Users.Results;
 using ETicaret.Domain.Entities;
 using ETicaret.Persistence.Contexts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ETicaret.Persistence.Services;
 
-public class UserService(UserManager<AppUser> userManager, ETicaretDbContext context) : IUserService
+public class UserService(UserManager<AppUser> userManager, ETicaretDbContext context, IHttpContextAccessor httpContextAccessor) : IUserService
 {
+    private async Task<AppUser?> CurrentUser()
+    {
+        var userName = httpContextAccessor?.HttpContext?.User?.Identity?.Name;
+        AppUser? appUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        return appUser;
+    }
     public async Task<UpdateUserResultDto> UpdateUserAsync(UpdateUserDto dto)
     {
         var user = await userManager.FindByIdAsync(dto.Id.ToString());
@@ -60,19 +67,22 @@ public class UserService(UserManager<AppUser> userManager, ETicaretDbContext con
         });
     }
 
-    public async Task<GetUserResultDto?> GetSupportAsync()
+    public async Task<IEnumerable<GetUserResultDto>> GetSupportAsync()
     {
         var user = await context.Users.Where(x=> x.FirstName == "Müşteri").OrderBy(p => p.FirstName).FirstOrDefaultAsync();
-        return new()
+        GetUserResultDto result = new GetUserResultDto()
         {
             Id = user.Id.ToString(),
             FullName = user.FirstName + " " + user.LastName
         };
+        var list = new List<GetUserResultDto>();
+        list.Add(result);
+        return list;
     }
 
     public async Task<UserChangePasswordResultDto> ChangePasswordAsync(UserChangePasswordDto dto)
     {
-        var user = await userManager.FindByIdAsync(dto.Id.ToString());
+        var user = await CurrentUser();
         if(user is null)
             return new() {Success = false, Message = "Kullanıcı Bulunamadı"};
         var isCheck = await userManager.CheckPasswordAsync(user, dto.OldPassword);

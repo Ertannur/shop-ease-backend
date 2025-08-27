@@ -110,8 +110,7 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
         await context.SaveChangesAsync();
         return new AddProductResultDto() { Message = "Ürün eklendi", Success = true, ProductId = productId };
     }
-
-    // yeni eklendi
+    
     public async Task<AddFavoriteProductResultDto> AddFavoritesAsync(Guid productId)
     {
         var currentUser = await CurrentUser();
@@ -138,7 +137,7 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
 
         if (exists)
             return new ()
-            {
+            {   
                 Success = false,
                 Message = "Ürün Hali Hazırda Favorilerde Bulunmaktadır",
                 ProductId = productId
@@ -190,5 +189,15 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
             }).ToListAsync();
             
         return getFavoriteProductDto;
+    }
+
+    public async Task<IEnumerable<GetProductResultDto>> GetDiscountProductsAsync(int currentPage = 1, int pageSize = 8)
+    {
+        var products = context.Products
+            .Include(x => x.ProductTypes)
+            .Include(x => x.Images)
+            .AsSplitQuery()
+            .Where(x => x.IsDeleted == false);
+        return new List<GetProductResultDto>();
     }
 }
