@@ -23,4 +23,13 @@ public class AdressController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(new GetUserAdressQuery());
         return Ok(result);
     }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> UpdateAdress(UpdateAdressCommandRequest  request)
+    {
+        var result = await mediator.Send(request);
+        if(result.Success)
+            return Ok(result);
+        return BadRequest(result);
+    }
 }

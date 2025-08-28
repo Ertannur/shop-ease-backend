@@ -1,5 +1,6 @@
 using ETicaret.Application.Abstractions;
 using ETicaret.Application.DTOs.Baskets.Requests;
+using ETicaret.Application.DTOs.Baskets.Results;
 using ETicaret.Domain.Entities;
 using ETicaret.Persistence.Contexts;
 using Microsoft.AspNetCore.Http;
@@ -40,16 +41,30 @@ public class BasketService(IHttpContextAccessor httpContextAccessor, UserManager
         }
         return null;
     }
-    public async Task<IEnumerable<BasketItem>> GetBasketItemsAsync()
+    public async Task<IEnumerable<GetBasketItemResultDto>> GetBasketItemsAsync()
     {
         Basket? basket = await ContextUser();
         if(basket is null)
-            return new List<BasketItem>();
-        Basket? result = await context.Set<Basket>().Include(x=>x.BasketItems)
+            return new List<GetBasketItemResultDto>();
+        /*Basket? result = await context.Set<Basket>().Include(x=>x.BasketItems)
             .ThenInclude(x=> x.Product)
-            //.ThenInclude(x=> x.Images)
+            .ThenInclude(x=> x.Images)
             .FirstOrDefaultAsync(x=> x.Id == basket.Id);
         return result.BasketItems;
+        */
+        var result = context.BasketItems
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(x => x.BasketId == basket.Id)
+            .Select(x => new GetBasketItemResultDto
+            {
+                BasketItemId = x.Id,
+                ImageUrl = x.Product.Images.FirstOrDefault(a => a.ProductId == x.ProductId).ImageUrl,
+                Name = x.Product.Name,
+                Price = x.Product.Price,
+                Quantity = x.Quantity
+            });
+        return result;
     }
 
     public async Task AddItemToBasketAsync(AddItemToBasketDto addItemToBasketDto)

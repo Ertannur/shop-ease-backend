@@ -60,12 +60,25 @@ public class AuthService(UserManager<AppUser> userManager, IRoleService roleServ
             await signInManager.PasswordSignInAsync(user, loginDto.Password, true, false);
             var token = await tokenService.CreateAccessTokenAsync(user.Id.ToString());
             await userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration);
+            var roles = await userManager.GetRolesAsync(user);
             return new()
             {
                 Success = true,
                 Message = "Giriş İşlemi Başarıyla Gerçekleştirilmiştir",
                 Token = token,
-                UserId = user.Id
+                User = new ()
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BirthDate = user.DateOfBirth,
+                    Gender = user.Gender,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    Roles = roles.Select(x=> x.ToString()).ToList(),
+                    
+                }
+               
             };
         }
 
@@ -83,12 +96,24 @@ public class AuthService(UserManager<AppUser> userManager, IRoleService roleServ
         {
             Token token = await tokenService.CreateAccessTokenAsync(user.Id.ToString());
             await userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration);
+            var roles = await userManager.GetRolesAsync(user);
             return new()
             {
                 Success = true,
                 Message = "Giriş İşlemi Başarıyla Gerçekleştirilmiştir",
                 Token = token,
-                UserId = user.Id
+                User = new ()
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BirthDate = user.DateOfBirth,
+                    Gender = user.Gender,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    Roles = roles.Select(x=> x.ToString()).ToList(),
+                    
+                }
             };
             
         }

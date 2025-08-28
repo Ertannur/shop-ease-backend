@@ -12,10 +12,11 @@ public class GetBasketItemsQueryHandler(IBasketService basketService) : IRequest
         var basketItems = await basketService.GetBasketItemsAsync();
         return basketItems.Select(x=> new  GetBasketItemsQueryResult()
         {
-            BasketItemId = x.Id,
+            BasketItemId = x.BasketItemId,
             Quantity = x.Quantity,
-            Price = x.Product.Price,
-            Name = x.Product.Name,
+            Price = x.Price,
+            Name = x.Name,
+            ImageUrl = x.ImageUrl
         });
     }
 }

@@ -71,4 +71,32 @@ public class AdressService(ETicaretDbContext context, IHttpContextAccessor httpC
             PostCode = x.PostCode
         });
     }
+
+    public async Task<UpdateAdressResultDto> UpdadeAdressAsync(UpdateAdressDto updateAdressDto)
+    {
+        var adress = await context.Adresses.FindAsync(updateAdressDto.AdressId);
+        if (adress is null)
+            return new()
+            {
+                Success = false,
+                Message = "Adres Bilgisi Bulunamamıştır"
+            };
+        adress.Title = updateAdressDto.Title;
+        adress.Name = updateAdressDto.Name;
+        adress.Surname = updateAdressDto.Surname;
+        adress.Email = updateAdressDto.Email;
+        adress.Phone = updateAdressDto.Phone;
+        adress.Address =  updateAdressDto.Address;
+        adress.City = updateAdressDto.City;
+        adress.District = updateAdressDto.District;
+        adress.PostCode = updateAdressDto.PostCode;
+        context.Adresses.Update(adress);
+        await context.SaveChangesAsync();
+        return new()
+        {
+            Success = true,
+            Message = "Adres Bilgisi Başarıyla Güncelleştirilmiştir"
+        };
+
+    }
 }

@@ -14,8 +14,8 @@ public class RefreshTokenLoginCommandHandler(IAuthService authService) : IReques
         {
             Success = result.Success,
             Message = result.Message,
-            UserId = result.UserId,
-            Token = result.Token
+            Token = result.Token,
+            User = result.User
         };
     }
 }

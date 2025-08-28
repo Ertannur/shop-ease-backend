@@ -70,6 +70,9 @@ public class UserService(UserManager<AppUser> userManager, ETicaretDbContext con
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
+            BirthDate = user.DateOfBirth,
+            Gender = user.Gender,
+            PhoneNumber = user.PhoneNumber,
             Roles = roles.Select(r => r.ToString()).ToList()
         };
     }
