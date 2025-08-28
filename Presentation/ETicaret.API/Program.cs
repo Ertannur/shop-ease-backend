@@ -69,7 +69,6 @@ app.UseSwaggerUI();
 
 // CORS ve HTTPS
 app.UseCors("SignalRPolicy");
-app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 

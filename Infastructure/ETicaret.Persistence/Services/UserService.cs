@@ -57,6 +57,23 @@ public class UserService(UserManager<AppUser> userManager, ETicaretDbContext con
         };
     }
 
+    public async Task<GetCurrentUserResultDto> GetCurrentUserAsync()
+    {
+        var  user = await CurrentUser();
+        if (user is null)
+            return new GetCurrentUserResultDto();
+        var roles = await userManager.GetRolesAsync(user);
+
+        return new()
+        {
+            UserId = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Roles = roles.Select(r => r.ToString()).ToList()
+        };
+    }
+
     public async Task<IEnumerable<GetUserResultDto>> GetUsersAsync()
     {
         IEnumerable<AppUser> users = await context.Users.OrderBy(p => p.FirstName).ToListAsync();

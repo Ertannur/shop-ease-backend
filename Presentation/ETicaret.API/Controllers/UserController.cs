@@ -1,4 +1,3 @@
-using ETicaret.Application.CQRS.Commands.Favorites;
 using ETicaret.Application.CQRS.Commands.Users;
 using ETicaret.Application.CQRS.Queries.Users;
 using MediatR;
@@ -19,6 +18,13 @@ public class UserController(IMediator mediator) : ControllerBase
         if(result.Success)
             return Ok(result);
         return BadRequest(result);
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var result = await mediator.Send(new GetCurrentUserQuery());
+        return Ok(result);
     }
 
     [HttpGet("[action]")]

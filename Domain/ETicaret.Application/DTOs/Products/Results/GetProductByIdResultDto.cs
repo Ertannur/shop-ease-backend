@@ -16,6 +16,7 @@ public class GetProductByIdResultDto
 
 public class ProductDetail
 {
+    public Guid ProductDetailId { get; set; }
     public string Color { get;set; }
     public string Size { get;set; }
     public int Stock { get;set; }

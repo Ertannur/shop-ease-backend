@@ -62,16 +62,10 @@ public static class ServiceRegistiration
         // cors politikası ayarlaması gerçekleştirildi
         services.AddCors(opt =>
         {
-            opt.AddPolicy("CorsPolicy", policy =>
-            {
-                policy.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-                
-            });
             opt.AddPolicy("SignalRPolicy", policy =>
             {
-                policy.WithOrigins("http://localhost:4200", "http://localhost:3000", "http://192.168.1.30:3000")
+                policy.SetIsOriginAllowed(origin =>
+                    new Uri(origin).Host == "localhost")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
@@ -114,6 +108,7 @@ public static class ServiceRegistiration
        services.AddScoped<IValidator<ResetPasswordCommandRequest>, ResetPasswordValidator>();
        services.AddScoped<IValidator<ForgotPasswordCommandRequest>, ForgotPasswordValidator>();
        services.AddScoped<IValidator<AddAdressCommandRequest>, AddAdressValidator>();
+       services.AddScoped<IValidator<UpdateAdressCommandRequest>, UpdateAdressValidator>();
        services.AddFluentValidationAutoValidation();
        services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
        

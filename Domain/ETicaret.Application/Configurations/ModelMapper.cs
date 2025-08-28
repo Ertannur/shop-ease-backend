@@ -34,4 +34,5 @@ public static partial class ModelMapper
     public static partial ResetPasswordDto MapResetPasswordDto(ResetPasswordCommandRequest  resetPasswordCommandRequest);
     public static partial AddAdressDto MapAddAdressDto(AddAdressCommandRequest request);
     public static partial CreateOrderDto MapCreateOrderDto(CreateOrderCommandRequest request);
+    public static partial UpdateAdressDto MapUpdateAdressDto(UpdateAdressCommandRequest request);
 }

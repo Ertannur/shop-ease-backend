@@ -73,6 +73,7 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
                 Details = p.ProductTypes
                     .Select(pt => new ProductDetail
                     {
+                        ProductDetailId = pt.Id,
                         Color = pt.Color != null
                             ? pt.Color.ColorType.ToString()
                             : null,
