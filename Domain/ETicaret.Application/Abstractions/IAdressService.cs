@@ -10,4 +10,5 @@ public interface IAdressService
     Task<AddAdressResultDto> AddAdressAsync(AddAdressDto dto);
     Task<IEnumerable<GetUserAdressResultDto>> GetUserAdressAsync();
     Task<UpdateAdressResultDto>UpdadeAdressAsync(UpdateAdressDto updateAdressDto);
+    Task<DeleteAdressResultDto> DeleteAdressAsync(Guid adressId);
 }

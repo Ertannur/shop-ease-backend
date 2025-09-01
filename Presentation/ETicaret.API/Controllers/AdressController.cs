@@ -32,4 +32,13 @@ public class AdressController(IMediator mediator) : ControllerBase
             return Ok(result);
         return BadRequest(result);
     }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> DeleteAdress(DeleteAdressCommandRequest  request)
+    {
+        var result = await mediator.Send(request);
+        if(result.Success)
+            return Ok(result);
+        return BadRequest(result);
+    }
 }

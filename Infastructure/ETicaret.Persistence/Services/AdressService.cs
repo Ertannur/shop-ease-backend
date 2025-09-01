@@ -99,4 +99,23 @@ public class AdressService(ETicaretDbContext context, IHttpContextAccessor httpC
         };
 
     }
+
+    public async Task<DeleteAdressResultDto> DeleteAdressAsync(Guid adressId)
+    {
+        var adress = await context.Adresses.FindAsync(adressId);
+        if (adress is null)
+            return new()
+            {
+                Success = false,
+                Message = "Adres Bilgisi Bulunamamıştır"
+            };
+        adress.IsDeleted = true;
+        context.Adresses.Update(adress);
+        await context.SaveChangesAsync();
+        return new()
+        {
+            Success = true,
+            Message = "Adres Bilgisi Başarıyla Silinmiştir"
+        };
+    }
 }

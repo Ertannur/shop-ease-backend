@@ -28,7 +28,7 @@ public class AzureStorage : Storage, IAzureStorage
             var fileNewName =await FileRenameAsync(containerName, file.FileName, HasFile);
             var blobClient = _blobContainerClient.GetBlobClient(fileNewName);
             await blobClient.UploadAsync(file.OpenReadStream());
-            datas.Add((fileNewName, $"https://eticaretfiles.blob.core.windows.net/{containerName}/{fileNewName}"));
+            datas.Add((fileNewName, $"https://guncufiles.blob.core.windows.net/{containerName}/{fileNewName}"));
         }
         return datas;
     }
