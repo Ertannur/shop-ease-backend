@@ -29,33 +29,24 @@ public class ProductController(IMediator mediator, IProductService productServic
         var result = await mediator.Send(new  GetProductByIdQuery() { Id = id });
         return Ok(result);
     }
-    
-    [HttpPost("[action]")]
+
+    [HttpGet("[action]")]
     [AllowAnonymous]
-    public async Task<IActionResult> AddProduct(AddProductCommandRequest addProductCommandRequest)
+    public async Task<IActionResult> GetProductsByName([FromQuery] int currentPage, [FromQuery] int pageSize,[FromQuery] string? productName)
     {
-      
-        var result=await mediator.Send(addProductCommandRequest);
-        if (result.Success) 
-            return Ok(result);
-        return BadRequest(result);
-        
-    }
-    /*
-    [HttpPost("[action]")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> UpdateProduct()
-    {
-        return Ok();
+        var result = await mediator.Send(new GetProductsByNameQuery(){CurrentPage = currentPage,ProductName = productName,PageSize = pageSize});
+        return Ok(result);
     }
 
-    [HttpPost("[action]")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> DeleteProduct()
+    [HttpGet("[action]")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetFilteredProducts([FromQuery] int currentPage, [FromQuery] int pageSize,
+        [FromQuery] string? type)
     {
-        return Ok();
+        var result = await mediator.Send(new GetFilteredProductsQuery() { CurrentPage = currentPage, PageSize = pageSize, Type = type });
+        return Ok(result);
     }
-    */
+    
     [Authorize(Roles = "Admin, User")]
     [HttpGet("[action]")]
     public async Task<IActionResult> GetFavoriteProducts()
@@ -82,4 +73,30 @@ public class ProductController(IMediator mediator, IProductService productServic
             return NotFound(result);
         return Ok(result);
     }
+    /*
+    [HttpPost("[action]")]
+    [AllowAnonymous]
+    public async Task<IActionResult> AddProduct(AddProductCommandRequest addProductCommandRequest)
+    {
+
+        var result=await mediator.Send(addProductCommandRequest);
+        if (result.Success)
+            return Ok(result);
+        return BadRequest(result);
+
+    }
+    [HttpPost("[action]")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateProduct()
+    {
+        return Ok();
+    }
+
+    [HttpPost("[action]")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteProduct()
+    {
+        return Ok();
+    }
+    */
 }

@@ -3,9 +3,9 @@ using MediatR;
 
 namespace ETicaret.Application.CQRS.Queries.Products;
 
-public class GetProductsQuery : IRequest<GetProductsQueryResult>
+public class GetFilteredProductsQuery : IRequest<GetFilteredProductsQueryResult>
 {
-    public string? Category { get; set; }
+    public string? Type { get; set; }
     public int CurrentPage { get; set; }
     public int PageSize { get; set; }
 }

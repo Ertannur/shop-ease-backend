@@ -51,6 +51,157 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
             TotalCount = paginationResponse.TotalCount
         };
     }
+    public async Task<GetProductResultDto> GetProductsByNameAsync(string? name, int currentPage = 1, int pageSize = 8)
+       {
+           var products = context.Products.Include(x=>x.ProductTypes)
+               .Include(x=>x.Images)
+               .AsSplitQuery()
+               .Where(x => x.IsDeleted == false);
+           if (!string.IsNullOrWhiteSpace(name))
+           {
+               products = products
+                   .Where(x => EF.Functions.Like(
+                       EF.Functions.Collate(x.Name, "SQL_Latin1_General_CP1_CI_AS"),
+                       $"%{name}%"));
+
+           }
+           var paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.CreatedDate);
+           var productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
+           {
+               Name = x.Name,
+               ProductId = x.Id,
+               Price = x.Price,
+               ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+           });
+           return new()
+           {
+               Products = productViewModels,
+               HasNextPage = paginationResponse.HasNextPage,
+               HasPreviousPage = paginationResponse.HasPreviousPage,
+               TotalPage = paginationResponse.TotalPages,
+               TotalCount = paginationResponse.TotalCount
+           };
+       }
+
+    public async Task<GetProductResultDto> GetFilteredProducts(string? type, int currentPage = 1, int pageSize = 8)
+    {
+        var products = context.Products.Include(x=>x.ProductTypes)
+            .Include(x=>x.Images)
+            .AsSplitQuery()
+            .Where(x => x.IsDeleted == false);
+        PaginationResponse<Product> paginationResponse;
+        IEnumerable<ProductViewModel> productViewModels;
+        switch (type)
+        {
+            case "new":
+                paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.CreatedDate);
+                productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
+                {
+                    Name = x.Name,
+                    ProductId = x.Id,
+                    Price = x.Price,
+                    ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                });
+                return new()
+                {
+                    Products = productViewModels,
+                    HasNextPage = paginationResponse.HasNextPage,
+                    HasPreviousPage = paginationResponse.HasPreviousPage,
+                    TotalPage = paginationResponse.TotalPages,
+                    TotalCount = paginationResponse.TotalCount
+                };
+            case "discounted":
+                paginationResponse  = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.Price);
+                productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
+                {
+                    Name = x.Name,
+                    ProductId = x.Id,
+                    Price = x.Price,
+                    ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                });
+                return new()
+                {
+                    Products = productViewModels,
+                    HasNextPage = paginationResponse.HasNextPage,
+                    HasPreviousPage = paginationResponse.HasPreviousPage,
+                    TotalPage = paginationResponse.TotalPages,
+                    TotalCount = paginationResponse.TotalCount
+                };
+            case "deals":
+                paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.CreatedDate);
+                productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
+                {
+                    Name = x.Name,
+                    ProductId = x.Id,
+                    Price = x.Price,
+                    ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                });
+                return new()
+                {
+                    Products = productViewModels,
+                    HasNextPage = paginationResponse.HasNextPage,
+                    HasPreviousPage = paginationResponse.HasPreviousPage,
+                    TotalPage = paginationResponse.TotalPages,
+                    TotalCount = paginationResponse.TotalCount
+                };
+            case  "weekly" : 
+                var now = DateTime.UtcNow;
+                var oneWeekAgo = now.AddDays(-7);
+                products = products.Where(p=> p.CreatedDate <= oneWeekAgo);
+                paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.CreatedDate);
+                productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
+                {
+                    Name = x.Name,
+                    ProductId = x.Id,
+                    Price = x.Price,
+                    ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                });
+                return new()
+                {
+                    Products = productViewModels,
+                    HasNextPage = paginationResponse.HasNextPage,
+                    HasPreviousPage = paginationResponse.HasPreviousPage,
+                    TotalPage = paginationResponse.TotalPages,
+                    TotalCount = paginationResponse.TotalCount
+                };
+            case "best-sellers": 
+                paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.CreatedDate);
+                productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
+                {
+                    Name = x.Name,
+                    ProductId = x.Id,
+                    Price = x.Price,
+                    ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                });
+                return new()
+                {
+                    Products = productViewModels,
+                    HasNextPage = paginationResponse.HasNextPage,
+                    HasPreviousPage = paginationResponse.HasPreviousPage,
+                    TotalPage = paginationResponse.TotalPages,
+                    TotalCount = paginationResponse.TotalCount
+                };
+            default:
+                paginationResponse = await products.Where(new PaginationRequest(currentPage, pageSize), x => x.CreatedDate);
+                productViewModels = paginationResponse.Data.Select(x => new ProductViewModel()
+                {
+                    Name = x.Name,
+                    ProductId = x.Id,
+                    Price = x.Price,
+                    ImageUrl = x.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                });
+                return new()
+                {
+                    Products = productViewModels,
+                    HasNextPage = paginationResponse.HasNextPage,
+                    HasPreviousPage = paginationResponse.HasPreviousPage,
+                    TotalPage = paginationResponse.TotalPages,
+                    TotalCount = paginationResponse.TotalCount
+                };
+        }
+
+       
+    }
 
     public async Task<GetProductByIdResultDto> GetProductByIdAsync(Guid id)
     {
@@ -191,6 +342,9 @@ public class ProductService(ETicaretDbContext context, IHttpContextAccessor http
             
         return getFavoriteProductDto;
     }
+
+   
+
 
     public async Task<IEnumerable<GetProductResultDto>> GetDiscountProductsAsync(int currentPage = 1, int pageSize = 8)
     {
